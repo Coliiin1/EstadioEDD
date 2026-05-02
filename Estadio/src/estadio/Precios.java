@@ -27,7 +27,7 @@ public class Precios {
     public void displayPrecios(){
         Set<String> clavesOrdenadas=precios.keySet();
         for(String clave:clavesOrdenadas){
-            System.out.printf("%-10s  %10s\n",clave,precios.get(clave));
+            System.out.printf("%-20s  %10s\n",clave,precios.get(clave));
         }
     }
     public static void main(String args[]){

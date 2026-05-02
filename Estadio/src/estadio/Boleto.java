@@ -16,7 +16,7 @@ public class Boleto
     private int numeroAsiento;
     private boolean estado;
 
-    public Boleto(String idBoleto, Categoria categoria, String numeroAsiento, boolean estado)
+    public Boleto(String idBoleto, Categoria categoria, int numeroAsiento, boolean estado)
     {
         this.idBoleto = idBoleto;
         this.categoria = categoria;
@@ -64,7 +64,7 @@ public class Boleto
     /**
      * @return the numeroAsiento
      */
-    public String getNumeroAsiento()
+    public int getNumeroAsiento()
     {
         return numeroAsiento;
     }
@@ -72,7 +72,7 @@ public class Boleto
     /**
      * @param numeroAsiento the numeroAsiento to set
      */
-    public void setNumeroAsiento(String numeroAsiento)
+    public void setNumeroAsiento(int numeroAsiento)
     {
         this.numeroAsiento = numeroAsiento;
     }

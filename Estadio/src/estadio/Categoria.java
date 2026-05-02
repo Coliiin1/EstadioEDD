@@ -15,11 +15,11 @@ package estadio;
  */
 public enum Categoria
 {
+
+    VIP(1500.0,"VIP"),
+    GENERAL(300.0,"GENERAL"),
+    PREFERENCIAL(800.0,"PREFERENCIAL");
     private String id;
-    
-    VIP(1500.0),
-    GENERAL(300.0),
-    PREFERENCIAL(800.0);
     
     private double precio;
 
