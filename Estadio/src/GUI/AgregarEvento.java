@@ -10,6 +10,6 @@ import javax.swing.*;
  *
  * @author danie
  */
-public class AgregarEvento extends JFrame{
-    
+public class AgregarEvento extends JFrame {
+
 }

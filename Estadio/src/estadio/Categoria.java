@@ -15,15 +15,18 @@ package estadio;
  */
 public enum Categoria
 {
+    private String id;
+    
     VIP(1500.0),
     GENERAL(300.0),
     PREFERENCIAL(800.0);
     
     private double precio;
 
-    private Categoria(double precio)
+    private Categoria(double precio, String id)
     {
         this.precio = precio;
+        this.id = id;
     }
 
     /**

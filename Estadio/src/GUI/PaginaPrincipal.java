@@ -13,32 +13,28 @@ import javax.swing.JFrame;
  *
  * @author fabri
  */
-public class PaginaPrincipal extends JFrame implements ActionListener{
-    
-    static Color VerdeB = new Color(19, 50, 21);
-    static Color BeigeB = new Color(243, 232, 211);
-    
-    public PaginaPrincipal(){
-        setSize(1400,800);
+public class PaginaPrincipal extends JFrame implements ActionListener {
+
+    static Color verdeB = new Color(19, 50, 21);
+    static Color beigeB = new Color(243, 232, 211);
+
+    public PaginaPrincipal() {
+        setSize(1400, 800);
         setLayout(null);
         setTitle("Pagina principal");
         setLocationRelativeTo(this);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
-    
-    
-    
-    
-    
-    
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
     public static void main(String[] args) {
-        PaginaPrincipal pg=new PaginaPrincipal();
+        PaginaPrincipal pg = new PaginaPrincipal();
         pg.setVisible(true);
     }
 }

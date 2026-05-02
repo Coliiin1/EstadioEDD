@@ -13,13 +13,15 @@ public class Boleto
 
     private String idBoleto;
     private Categoria categoria;
-    private String numeroAsiento;
+    private int numeroAsiento;
+    private boolean estado;
 
-    public Boleto(String idBoleto, Categoria categoria, String numeroAsiento, boolean isDisponible)
+    public Boleto(String idBoleto, Categoria categoria, String numeroAsiento, boolean estado)
     {
         this.idBoleto = idBoleto;
         this.categoria = categoria;
         this.numeroAsiento = numeroAsiento;
+        this.estado = estado;
     }
 
     public double getPrecio()
