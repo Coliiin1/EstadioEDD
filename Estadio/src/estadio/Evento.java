@@ -9,5 +9,6 @@ package estadio;
  * @author fabri
  */
 public class Evento {
-    
+    private String nombreEvento;
+    private EstadioClass estadio;
 }
