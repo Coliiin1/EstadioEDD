@@ -1,487 +1,294 @@
 package GUI;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.RoundRectangle2D;
+import java.awt.event.*;
+import java.awt.geom.*;
 import javax.swing.*;
-import javax.swing.border.AbstractBorder;
-import javax.swing.border.EmptyBorder;
+import javax.swing.border.*;
 
 public class MenuPU extends JFrame {
 
-    static Color VerdeB       = new Color(76, 175, 80);
-    static Color BeigeB       = new Color(243, 232, 211);
-    static Color TextoBtn     = new Color(255, 255, 255);
-    static Color VerdeTarjeta = new Color(27, 94, 32);
+    static final Color VerdeB       = new Color(76, 175, 80);
+    static final Color BeigeB       = new Color(243, 232, 211);
+    static final Color VerdeTarjeta = new Color(27, 94, 32);
+    private Login login = new Login();
 
-    public JButton btnEventoPrincipal;
-    public JButton btnInfoGeneral;
-    public JButton btnIngresa;
-    public JButton btnComprar;
+    public JButton btnEventoPrincipal, btnInfoGeneral, btnIngresa, btnComprar;
+    public JPanel  panelImagen, panelLateral;
 
-    public JPanel panelImagen;
-    public JPanel panelLateral;
+    // Panel central reutilizable: se reemplaza su contenido al cambiar de sección
+    private JPanel margenCentral;
 
     public MenuPU() {
-
         setTitle("Menu Principal Usuario");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // Ventana adaptable
         setMinimumSize(new Dimension(1100, 700));
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        
         setIconImage(getToolkit().getImage(getClass().getResource("/Imagenes/Logo.jpg")));
-        
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-
-            @Override
-            public void componentResized(java.awt.event.ComponentEvent evt) {
-                revalidate();
-                repaint();
-            }
+        addComponentListener(new ComponentAdapter() {
+            @Override public void componentResized(ComponentEvent e) { revalidate(); repaint(); }
         });
-
         setLayout(new BorderLayout());
         getContentPane().setBackground(BeigeB);
     }
 
-    public void Contenedor() {
+    public void ContenedorPrincipal() {
 
-        // =========================================================
-        // NAVBAR
-        // =========================================================
-
-        JPanel panelFondo = new JPanel(new BorderLayout()) {
-
-            @Override
-            protected void paintComponent(Graphics g) {
-
-                Graphics2D g2 = (Graphics2D) g.create();
-
-                g2.setRenderingHint(
-                        RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON
-                );
-
-                g2.setColor(VerdeTarjeta);
-
-                g2.fillRoundRect(
-                        0,
-                        0,
-                        getWidth(),
-                        getHeight(),
-                        40,
-                        40
-                );
-
-                g2.dispose();
-
-                super.paintComponent(g);
-            }
-        };
-
-        panelFondo.setOpaque(false);
+        // --- NAVBAR ---
+        JPanel panelFondo = panelRedondeado(VerdeTarjeta, 40, new BorderLayout());
         panelFondo.setBorder(new EmptyBorder(10, 15, 10, 15));
 
-        // =========================================================
-        // PANEL IZQUIERDO NAVBAR
-        // =========================================================
-
-        JPanel izquierda = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
-        izquierda.setOpaque(false);
-
-        // =========================================================
-        // LOGO REDONDEADO REAL
-        // =========================================================
-
-        ImageIcon iconoLogo = new ImageIcon("src/Imagenes/Logo.jpg");
-
-        Image imagenLogo = iconoLogo.getImage();
-
+        // Logo circular
+        Image imagenLogo = new ImageIcon("src/Imagenes/Logo.jpg").getImage();
         JLabel lblLogo = new JLabel() {
-
-            @Override
-            protected void paintComponent(Graphics g) {
-
+            @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
-
-                g2.setRenderingHint(
-                        RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON
-                );
-
-                // Recorte circular REAL
-                Shape clip = new java.awt.geom.Ellipse2D.Float(
-                        0,
-                        0,
-                        getWidth(),
-                        getHeight()
-                );
-
-                g2.setClip(clip);
-
-                // Dibujar imagen adaptada
-                g2.drawImage(
-                        imagenLogo,
-                        0,
-                        0,
-                        getWidth(),
-                        getHeight(),
-                        this
-                );
-
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setClip(new Ellipse2D.Float(0, 0, getWidth(), getHeight()));
+                g2.drawImage(imagenLogo, 0, 0, getWidth(), getHeight(), this);
                 g2.dispose();
             }
         };
-
         lblLogo.setPreferredSize(new Dimension(50, 50));
         lblLogo.setBorder(new RoundedBorder(50, VerdeB, 4));
-        
 
-        // =========================================================
-        // TITULO
-        // =========================================================
-
-        JLabel lblNombre = new JLabel("Nombre de la Aplicacion"); //Por cambiar
-
+        JLabel lblNombre = new JLabel("Chivo Cordoba UAEMex");
         lblNombre.setFont(new Font("Arial", Font.BOLD, 18));
         lblNombre.setForeground(Color.WHITE);
 
+        JPanel izquierda = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
+        izquierda.setOpaque(false);
         izquierda.add(lblLogo);
         izquierda.add(lblNombre);
 
-        // =========================================================
-        // PANEL BOTONES
-        // =========================================================
-
         JPanel panelBotones = new JPanel(new GridLayout(1, 3, 15, 0));
         panelBotones.setOpaque(false);
+        panelBotones.setPreferredSize(new Dimension(650, 45));
 
         btnEventoPrincipal = crearBotonNav("Evento Principal");
-        btnInfoGeneral = crearBotonNav("Informacion General");
-        btnIngresa = crearBotonNav("Ingresa");
+        btnInfoGeneral     = crearBotonNav("Informacion General");
+        btnIngresa         = crearBotonNav("Ingresa");
 
         panelBotones.add(btnEventoPrincipal);
         panelBotones.add(btnInfoGeneral);
         panelBotones.add(btnIngresa);
 
-        panelBotones.setPreferredSize(new Dimension(650, 45));
-
         panelFondo.add(izquierda, BorderLayout.WEST);
         panelFondo.add(panelBotones, BorderLayout.CENTER);
 
-        JPanel navPanel = new JPanel(new BorderLayout());
+        JPanel navPanel = wrapConMargen(panelFondo, 15, 15, 10, 15);
         navPanel.setBackground(BeigeB);
-        navPanel.setBorder(new EmptyBorder(15, 15, 10, 15));
-        navPanel.add(panelFondo, BorderLayout.CENTER);
 
-        // =========================================================
-        // CONTENEDOR PRINCIPAL
-        // =========================================================
+        // Inicializa el área central reutilizable
+        margenCentral = new JPanel(new BorderLayout());
+        margenCentral.setBackground(BeigeB);
 
-        JPanel contenedor = new JPanel(new BorderLayout(15, 0)) {
+        add(navPanel, BorderLayout.NORTH);
+        add(margenCentral, BorderLayout.CENTER);
 
-            @Override
-            protected void paintComponent(Graphics g) {
+        // Vista por defecto
+        mostrarContenido(ContenedorPPrincipal());
 
-                Graphics2D g2 = (Graphics2D) g.create();
+        btnEventoPrincipal.addActionListener(e -> mostrarContenido(ContenedorPPrincipal()));
+        btnInfoGeneral.addActionListener(e -> mostrarContenido(ContenedorInfo()));
+        btnIngresa.addActionListener(e -> { 
+            login.Contenedor();
+            login.setVisible(true);
+        });
+    }
 
-                g2.setRenderingHint(
-                        RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON
-                );
+    // Reemplaza el contenido del área central sin recrear la ventana
+    public void mostrarContenido(JPanel contenido) {
+        margenCentral.removeAll();
+        margenCentral.add(contenido, BorderLayout.CENTER);
+        margenCentral.revalidate();
+        margenCentral.repaint();
+    }
 
-                g2.setColor(new Color(230, 220, 200));
+    // Contenedor del evento principal: imagen + panel lateral con botón Comprar
+    public JPanel ContenedorPPrincipal() {
 
-                g2.fillRoundRect(
-                        0,
-                        0,
-                        getWidth(),
-                        getHeight(),
-                        45,
-                        45
-                );
-
-                g2.dispose();
-
-                super.paintComponent(g);
-            }
-        };
-
-        contenedor.setOpaque(false);
-        contenedor.setBorder(new EmptyBorder(15, 15, 15, 15));
-
-        // =========================================================
-        // PANEL IMAGEN EVENTO
-        // =========================================================
-
-        // =========================================================
-        // PANEL IMAGEN EVENTO
-        // =========================================================
-
-        ImageIcon eventoIcon = new ImageIcon("src/Imagenes/Logo.jpg"); //Cambiar por icono de evento
-
-        Image imagenEvento = eventoIcon.getImage();
-
+        // --- IMAGEN EVENTO ---
+        Image imagenEvento = new ImageIcon("src/Imagenes/Logo.jpg").getImage();
         panelImagen = new JPanel() {
-
-            @Override
-            protected void paintComponent(Graphics g) {
-
+            @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-
                 Graphics2D g2 = (Graphics2D) g.create();
-
-                g2.setRenderingHint(
-                        RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON
-                );
-
-                // Bordes redondeados REALES
-                Shape clip = new RoundRectangle2D.Float(
-                        0,
-                        0,
-                        getWidth(),
-                        getHeight(),
-                        40,
-                        40
-                );
-
-                g2.setClip(clip);
-
-                // Dibujar imagen adaptada al panel
-                g2.drawImage(
-                        imagenEvento,
-                        0,
-                        0,
-                        getWidth(),
-                        getHeight(),
-                        this
-                );
-
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setClip(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 40, 40));
+                g2.drawImage(imagenEvento, 0, 0, getWidth(), getHeight(), this);
                 g2.dispose();
             }
         };
-
         panelImagen.setOpaque(false);
         panelImagen.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
 
-        // =========================================================
-        // PANEL LATERAL
-        // =========================================================
-
-        panelLateral = new JPanel(new BorderLayout()) {
-
-            @Override
-            protected void paintComponent(Graphics g) {
-
-                Graphics2D g2 = (Graphics2D) g.create();
-
-                g2.setRenderingHint(
-                        RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON
-                );
-
-                g2.setColor(VerdeB);
-
-                g2.fillRoundRect(
-                        0,
-                        0,
-                        getWidth(),
-                        getHeight(),
-                        40,
-                        40
-                );
-
-                g2.dispose();
-
-                super.paintComponent(g);
-            }
-        };
-
-        panelLateral.setOpaque(false);
+        // --- PANEL LATERAL ---
+        panelLateral = panelRedondeado(VerdeB, 40, new BorderLayout());
         panelLateral.setPreferredSize(new Dimension(320, 0));
         panelLateral.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
 
-        // =========================================================
-        // BOTON COMPRAR
-        // =========================================================
-
         btnComprar = crearBotonRedondeado("Comprar", VerdeTarjeta);
-
         btnComprar.setFont(new Font("Arial", Font.BOLD, 18));
         btnComprar.setPreferredSize(new Dimension(240, 50));
+        btnComprar.addActionListener(e -> ContenedorComprar());
 
-        JPanel bottomLateral = new JPanel(
-                new FlowLayout(FlowLayout.CENTER, 0, 15)
-        );
-
+        JPanel bottomLateral = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
         bottomLateral.setOpaque(false);
         bottomLateral.add(btnComprar);
-
         panelLateral.add(bottomLateral, BorderLayout.SOUTH);
 
-        // =========================================================
-        // AGREGAR AL CONTENEDOR
-        // =========================================================
-
+        // --- CONTENEDOR ---
+        JPanel contenedor = panelRedondeado(new Color(230, 220, 200), 45, new BorderLayout(15, 0));
+        contenedor.setBorder(new EmptyBorder(15, 15, 15, 15));
         contenedor.add(panelImagen, BorderLayout.CENTER);
         contenedor.add(panelLateral, BorderLayout.EAST);
 
-        JPanel margen = new JPanel(new BorderLayout());
-
+        JPanel margen = wrapConMargen(contenedor, 0, 15, 15, 15);
         margen.setBackground(BeigeB);
-        margen.setBorder(new EmptyBorder(0, 15, 15, 15));
-
-        margen.add(contenedor, BorderLayout.CENTER);
-
-        add(navPanel, BorderLayout.NORTH);
-        add(margen, BorderLayout.CENTER);
+        return margen;
     }
 
-    // =============================================================
-    // BOTONES NAVBAR
-    // =============================================================
+    // Panel con fondo redondeado de color sólido
+    private JPanel panelRedondeado(Color color, int radio, LayoutManager layout) {
+        JPanel p = new JPanel(layout) {
+            @Override protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(color);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), radio, radio);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        p.setOpaque(false);
+        return p;
+    }
+
+    // Envuelve un panel con EmptyBorder en un panel de fondo transparente
+    private JPanel wrapConMargen(JPanel inner, int top, int left, int bottom, int right) {
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setOpaque(false);
+        wrapper.setBorder(new EmptyBorder(top, left, bottom, right));
+        wrapper.add(inner, BorderLayout.CENTER);
+        return wrapper;
+    }
 
     private JButton crearBotonNav(String texto) {
-
         JButton btn = crearBotonRedondeado(texto, VerdeB);
-
         btn.setFont(new Font("Arial", Font.BOLD, 15));
-
         return btn;
     }
 
-    // =============================================================
-    // BOTON REDONDEADO
-    // =============================================================
-
     private JButton crearBotonRedondeado(String texto, Color color) {
-
         JButton btn = new JButton(texto) {
-
-            @Override
-            protected void paintComponent(Graphics g) {
-
+            @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
-
-                g2.setRenderingHint(
-                        RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON
-                );
-
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(getBackground());
-
-                g2.fillRoundRect(
-                        0,
-                        0,
-                        getWidth(),
-                        getHeight(),
-                        30,
-                        30
-                );
-
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
                 super.paintComponent(g);
-
                 g2.dispose();
             }
         };
-
         btn.setContentAreaFilled(false);
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
         btn.setOpaque(false);
-
         btn.setForeground(Color.WHITE);
         btn.setBackground(color);
-
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         btn.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                btn.setBackground(color.brighter());
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                btn.setBackground(color);
-            }
+            @Override public void mouseEntered(MouseEvent e) { btn.setBackground(color.brighter()); }
+            @Override public void mouseExited(MouseEvent e)  { btn.setBackground(color); }
         });
-
         return btn;
     }
 
-    // =============================================================
-    // BORDE REDONDEADO
-    // =============================================================
-
     class RoundedBorder extends AbstractBorder {
-
-        private final int radius;
+        private final int radius, thickness;
         private final Color color;
-        private final int thickness;
 
         RoundedBorder(int radius, Color color, int thickness) {
-
-            this.radius = radius;
-            this.color = color;
-            this.thickness = thickness;
+            this.radius = radius; this.color = color; this.thickness = thickness;
         }
 
         @Override
-        public void paintBorder(
-                Component c,
-                Graphics g,
-                int x,
-                int y,
-                int width,
-                int height
-        ) {
-
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
             Graphics2D g2 = (Graphics2D) g.create();
-
-            g2.setRenderingHint(
-                    RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON
-            );
-
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(color);
-
             g2.setStroke(new BasicStroke(thickness));
-
-            g2.draw(new RoundRectangle2D.Double(
-                    x + 1,
-                    y + 1,
-                    width - 3,
-                    height - 3,
-                    radius,
-                    radius
-            ));
-
+            g2.draw(new RoundRectangle2D.Double(x + 1, y + 1, width - 3, height - 3, radius, radius));
             g2.dispose();
         }
 
-        @Override
-        public Insets getBorderInsets(Component c) {
-
-            return new Insets(10, 10, 10, 10);
-        }
+        @Override public Insets getBorderInsets(Component c) { return new Insets(10, 10, 10, 10); }
     }
 
-    // =============================================================
-    // MAIN
-    // =============================================================
+    public JPanel ContenedorInfo() {
+        // --- PANEL IZQUIERDO (texto / contenido principal) ---
+        JPanel panelIzquierdo = panelRedondeado(VerdeB, 40, new BorderLayout());
+        panelIzquierdo.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
+        // Aquí puedes agregar labels, texto, etc.
+        // Ejemplo: panelIzquierdo.add(new JLabel("Info aquí"), BorderLayout.CENTER);
+ 
+        // --- IMAGEN SUPERIOR DERECHA ---
+        Image imgArriba = new ImageIcon("src/Imagenes/EventoInfo1.jpg").getImage(); // cambia por tu imagen
+        JPanel panelImgArriba = new JPanel() {
+            @Override protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setClip(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 40, 40));
+                g2.drawImage(imgArriba, 0, 0, getWidth(), getHeight(), this);
+                g2.dispose();
+            }
+        };
+        panelImgArriba.setOpaque(false);
+        panelImgArriba.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
+ 
+        // --- IMAGEN INFERIOR DERECHA ---
+        Image imgAbajo = new ImageIcon("src/Imagenes/EventoInfo2.jpg").getImage(); // cambia por tu imagen
+        JPanel panelImgAbajo = new JPanel() {
+            @Override protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setClip(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 40, 40));
+                g2.drawImage(imgAbajo, 0, 0, getWidth(), getHeight(), this);
+                g2.dispose();
+            }
+        };
+        panelImgAbajo.setOpaque(false);
+        panelImgAbajo.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
+ 
+        // --- COLUMNA DERECHA: dos imágenes apiladas ---
+        JPanel columnaDerecha = new JPanel(new GridLayout(2, 1, 10, 10));
+        columnaDerecha.setOpaque(false);
+        columnaDerecha.setPreferredSize(new Dimension(360, 0));
+        columnaDerecha.add(panelImgArriba);
+        columnaDerecha.add(panelImgAbajo);
+ 
+        // --- CONTENEDOR CENTRAL (mismo estilo que ContenedorPPrincipal) ---
+        JPanel contenedor = panelRedondeado(new Color(230, 220, 200), 45, new BorderLayout(15, 0));
+        contenedor.setBorder(new EmptyBorder(15, 15, 15, 15));
+        contenedor.add(panelIzquierdo, BorderLayout.CENTER);
+        contenedor.add(columnaDerecha, BorderLayout.EAST);
+ 
+        JPanel margen = wrapConMargen(contenedor, 0, 15, 15, 15);
+        margen.setBackground(BeigeB);
+        return margen;
+    }
+    
+    public void ContenedorComprar() {
+        
+    }
 
     public static void main(String[] args) {
-
         SwingUtilities.invokeLater(() -> {
-
             MenuPU ventana = new MenuPU();
-            ventana.Contenedor();
+            ventana.ContenedorPrincipal();
             ventana.setVisible(true);
         });
     }
