@@ -5,9 +5,7 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import estadio.Asientos;
-import estadio.Categoria;
-import estadio.EstadioClass;
+import estadio.*;
 
 public class MenuPrincipal extends JFrame
 {
@@ -34,6 +32,9 @@ public class MenuPrincipal extends JFrame
     private JPanel margenCentral;
     private JPanel navPanel;      // referencia para poder reemplazarlo
     private JPanel panelBotones;  // referencia para actualizar botones
+    
+    
+    public Evento eventoPrincipoal; //esta clase ya contiene todas las estructuras de datos que vamos a ocupar
 
     public MenuPrincipal()
     {
@@ -43,6 +44,7 @@ public class MenuPrincipal extends JFrame
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setIconImage(getToolkit().getImage(getClass().getResource("/Imagenes/Logo.jpg")));
         this.estadio = new EstadioClass();
+        this.eventoPrincipoal=new Evento("eventoPrincipal", estadio);
         this.botonesAsientos = new JButton[10][30];
         addComponentListener(new ComponentAdapter()
         {
