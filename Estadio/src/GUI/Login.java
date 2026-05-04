@@ -10,6 +10,8 @@ public class Login extends JFrame{
     public JButton btnLogin;
     public JButton btnSignup;
     public JButton btnIgnore;
+    public String usuario = "Admin";
+    public String contra = "12345";
     
     public JButton borrar;
     
@@ -111,7 +113,6 @@ public class Login extends JFrame{
         JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
         innerPanel.setBackground(VerdeB);
-        
         ImageIcon LogoUAEMEX = new ImageIcon("src/Imagenes/LogoUAEMEX.png");
         JLabel lblLogo = new JLabel();
         lblLogo.setIcon(LogoUAEMEX);

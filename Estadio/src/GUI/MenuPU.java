@@ -13,12 +13,13 @@ public class MenuPU extends JFrame {
     static final Color VerdeTarjeta = new Color(27, 94, 32);
     private Login login = new Login();
 
-    static final String txtInformacion = "";
-
-    public JButton btnEventoPrincipal, btnInfoGeneral, btnIngresa, btnComprar;
+    public JButton btnEventoPrincipal, btnInfoGeneral, btnIngresa, btnComprar, btnSalir, btnModificar;
     public JPanel  panelImagen, panelLateral;
+    private boolean Admin = false;
 
     private JPanel margenCentral;
+    private JPanel navPanel;      // referencia para poder reemplazarlo
+    private JPanel panelBotones;  // referencia para actualizar botones
 
     public MenuPU() {
         setTitle("Menu Principal Usuario");
@@ -34,11 +35,25 @@ public class MenuPU extends JFrame {
     }
 
     public void ContenedorPrincipal() {
+        margenCentral = new JPanel(new BorderLayout());
+        margenCentral.setBackground(BeigeB);
 
-        // --- NAVBAR ---
+        actualizarNavbar(); // construye y agrega la navbar inicial
+
+        add(margenCentral, BorderLayout.CENTER);
+        mostrarContenido(ContenedorPPrincipal());
+
+        login.Contenedor();
+    }
+
+    // Reconstruye y reemplaza la navbar según el estado de Admin
+    private void actualizarNavbar() {
+
+        // --- FONDO NAVBAR ---
         JPanel panelFondo = panelRedondeado(VerdeTarjeta, 40, new BorderLayout());
         panelFondo.setBorder(new EmptyBorder(10, 15, 10, 15));
 
+        // Logo
         Image imagenLogo = new ImageIcon("src/Imagenes/Logo.jpg").getImage();
         JLabel lblLogo = new JLabel() {
             @Override protected void paintComponent(Graphics g) {
@@ -61,38 +76,72 @@ public class MenuPU extends JFrame {
         izquierda.add(lblLogo);
         izquierda.add(lblNombre);
 
-        JPanel panelBotones = new JPanel(new GridLayout(1, 3, 15, 0));
-        panelBotones.setOpaque(false);
-        panelBotones.setPreferredSize(new Dimension(650, 45));
-
+        // --- BOTONES según rol ---
         btnEventoPrincipal = crearBotonNav("Evento Principal");
         btnInfoGeneral     = crearBotonNav("Informacion General");
         btnIngresa         = crearBotonNav("Ingresa");
+        btnModificar       = crearBotonNav("Modificar Evento");
+        btnSalir           = crearBotonNav("Cerrar sesion");
 
-        panelBotones.add(btnEventoPrincipal);
-        panelBotones.add(btnInfoGeneral);
-        panelBotones.add(btnIngresa);
+        if (Admin) {
+            // 4 botones: Evento | Info | Modificar | Cerrar sesion
+            panelBotones = new JPanel(new GridLayout(1, 4, 15, 0));
+            panelBotones.setOpaque(false);
+            panelBotones.setPreferredSize(new Dimension(850, 45));
+            panelBotones.add(btnEventoPrincipal);
+            panelBotones.add(btnInfoGeneral);
+            panelBotones.add(btnModificar);
+            panelBotones.add(btnSalir);
+        } else {
+            // 3 botones: Evento | Info | Ingresa
+            panelBotones = new JPanel(new GridLayout(1, 3, 15, 0));
+            panelBotones.setOpaque(false);
+            panelBotones.setPreferredSize(new Dimension(650, 45));
+            panelBotones.add(btnEventoPrincipal);
+            panelBotones.add(btnInfoGeneral);
+            panelBotones.add(btnIngresa);
+        }
 
         panelFondo.add(izquierda, BorderLayout.WEST);
         panelFondo.add(panelBotones, BorderLayout.CENTER);
 
-        JPanel navPanel = wrapConMargen(panelFondo, 15, 15, 10, 15);
+        // Reemplaza navPanel en NORTH
+        if (navPanel != null) remove(navPanel);
+        navPanel = wrapConMargen(panelFondo, 15, 15, 10, 15);
         navPanel.setBackground(BeigeB);
-
-        margenCentral = new JPanel(new BorderLayout());
-        margenCentral.setBackground(BeigeB);
-
         add(navPanel, BorderLayout.NORTH);
-        add(margenCentral, BorderLayout.CENTER);
+        revalidate();
+        repaint();
 
-        mostrarContenido(ContenedorPPrincipal());
-
+        // --- LISTENERS ---
         btnEventoPrincipal.addActionListener(e -> mostrarContenido(ContenedorPPrincipal()));
         btnInfoGeneral.addActionListener(e -> mostrarContenido(ContenedorInfo()));
-        btnIngresa.addActionListener(e -> {
-            login.Contenedor();
-            login.setVisible(true);
-        });
+
+        if (Admin) {
+            btnModificar.addActionListener(e -> { /* acción modificar */ });
+            btnSalir.addActionListener(e -> {
+                Admin = false;
+                actualizarNavbar();             // vuelve a navbar de usuario
+                mostrarContenido(ContenedorPPrincipal());
+            });
+        } else {
+            btnIngresa.addActionListener(e -> {
+                login.setVisible(true);
+                // Evita acumular listeners con un array de un elemento como flag
+                ActionListener[] ls = login.btnLogin.getActionListeners();
+                for (ActionListener l : ls) login.btnLogin.removeActionListener(l);
+
+                login.btnLogin.addActionListener(f -> {
+                    if (login.txtUser.getText().equals(login.usuario)
+                            && login.txtPass.getText().equals(login.contra)) {
+                        login.setVisible(false);
+                        Admin = true;
+                        actualizarNavbar();     // reconstruye con botones de admin
+                        mostrarContenido(ContenedorPPrincipal());
+                    }
+                });
+            });
+        }
     }
 
     public void mostrarContenido(JPanel contenido) {
@@ -103,7 +152,6 @@ public class MenuPU extends JFrame {
     }
 
     public JPanel ContenedorPPrincipal() {
-
         Image imagenEvento = new ImageIcon("src/Imagenes/Logo.jpg").getImage();
         panelImagen = new JPanel() {
             @Override protected void paintComponent(Graphics g) {
@@ -143,22 +191,17 @@ public class MenuPU extends JFrame {
     }
 
     public JPanel ContenedorInfo() {
-
-        // --- PANEL IZQUIERDO con JTextArea scrolleable ---
         JPanel panelIzquierdo = panelRedondeado(BeigeB, 40, new BorderLayout());
         panelIzquierdo.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
 
         JTextArea textInfo = new JTextArea();
-        textInfo.setFont(new Font("Arial", Font.PLAIN, 30));
+        textInfo.setFont(new Font("Arial", Font.PLAIN, 32));
         textInfo.setForeground(Color.BLACK);
-        textInfo.setOpaque(false);          // fondo transparente: se ve el BeigeB del panel
-        textInfo.setLineWrap(true);         // texto se adapta al ancho del panel
-        textInfo.setWrapStyleWord(true);    // corte por palabra, no por letra
+        textInfo.setOpaque(false);
+        textInfo.setLineWrap(true);
+        textInfo.setWrapStyleWord(true);
         textInfo.setEditable(false);
         textInfo.setBorder(new EmptyBorder(15, 15, 15, 15));
-        
-        //Informacion sobre el Estadio
-        
         textInfo.setText("El Estadio Universitario Alberto “Chivo” Córdoba es uno de los recintos deportivos más representativos de la Universidad Autónoma del Estado de México (UAEMéx). Se encuentra ubicado dentro de Ciudad Universitaria, en Toluca, Estado de México, y es utilizado principalmente para eventos de fútbol, atletismo y fútbol americano. Fue inaugurado el 5 de noviembre de 1964 y cuenta con una capacidad aproximada para 32,000 espectadores.\n" +
 "\n" +
 "El estadio recibe su nombre en honor a Alberto “Chivo” Córdoba, destacado entrenador de fútbol americano universitario que impulsó el desarrollo deportivo de la UAEMéx. A lo largo de su historia, este recinto ha sido sede de importantes competencias universitarias y partidos profesionales, incluyendo encuentros de los Potros UAEM y del Deportivo Toluca durante la remodelación del Estadio Nemesio Diez en 2016.\n" +
@@ -168,44 +211,18 @@ public class MenuPU extends JFrame {
 "El estadio también destaca por sus instalaciones deportivas, ya que cuenta con una pista de atletismo certificada, cancha de pasto natural y áreas destinadas para competencias universitarias y eventos masivos. Gracias a sus remodelaciones y mantenimiento, continúa siendo uno de los espacios deportivos más importantes del Estado de México.\n" +
 "\n" +
 "Ubicado sobre Paseo General Vicente Guerrero, dentro de Ciudad Universitaria de la UAEMéx, el Estadio “Chivo” Córdoba forma parte de la identidad universitaria y cultural de la institución, siendo un símbolo histórico para estudiantes, deportistas y aficionados al deporte universitario.");
-        
-        //Finaliza Informacion del Estadio
-        
+
         JScrollPane scroll = new JScrollPane(textInfo);
         scroll.setOpaque(false);
-        scroll.getViewport().setOpaque(false); // viewport transparente
-        scroll.setBorder(null);                // sin borde propio del scroll
-        
-        panelIzquierdo.add(scroll, BorderLayout.CENTER); // ocupa todo el panel
+        scroll.getViewport().setOpaque(false);
+        scroll.setBorder(null);
+        panelIzquierdo.add(scroll, BorderLayout.CENTER);
 
-        // --- IMÁGENES DERECHA ---
-        Image imgArriba = new ImageIcon("src/Imagenes/EventoInfo1.jpg").getImage();
-        JPanel panelImgArriba = new JPanel() {
-            @Override protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setClip(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 40, 40));
-                g2.drawImage(imgArriba, 0, 0, getWidth(), getHeight(), this);
-                g2.dispose();
-            }
-        };
-        panelImgArriba.setOpaque(false);
-        panelImgArriba.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
+        Image imgArriba = new ImageIcon("src/Imagenes/ChivoCordoba1.jpeg").getImage();
+        JPanel panelImgArriba = crearPanelImagen(imgArriba);
 
-        Image imgAbajo = new ImageIcon("src/Imagenes/EventoInfo2.jpg").getImage();
-        JPanel panelImgAbajo = new JPanel() {
-            @Override protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setClip(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 40, 40));
-                g2.drawImage(imgAbajo, 0, 0, getWidth(), getHeight(), this);
-                g2.dispose();
-            }
-        };
-        panelImgAbajo.setOpaque(false);
-        panelImgAbajo.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
+        Image imgAbajo = new ImageIcon("src/Imagenes/Estadio2_1.jpg").getImage();
+        JPanel panelImgAbajo = crearPanelImagen(imgAbajo);
 
         JPanel columnaDerecha = new JPanel(new GridLayout(2, 1, 10, 10));
         columnaDerecha.setOpaque(false);
@@ -213,7 +230,6 @@ public class MenuPU extends JFrame {
         columnaDerecha.add(panelImgArriba);
         columnaDerecha.add(panelImgAbajo);
 
-        // --- CONTENEDOR ---
         JPanel contenedor = panelRedondeado(new Color(230, 220, 200), 45, new BorderLayout(15, 0));
         contenedor.setBorder(new EmptyBorder(15, 15, 15, 15));
         contenedor.add(panelIzquierdo, BorderLayout.CENTER);
@@ -222,6 +238,23 @@ public class MenuPU extends JFrame {
         JPanel margen = wrapConMargen(contenedor, 0, 15, 15, 15);
         margen.setBackground(BeigeB);
         return margen;
+    }
+
+    // Helper para paneles con imagen redondeada (evita repetición en ContenedorInfo)
+    private JPanel crearPanelImagen(Image img) {
+        JPanel p = new JPanel() {
+            @Override protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setClip(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 40, 40));
+                g2.drawImage(img, 0, 0, getWidth(), getHeight(), this);
+                g2.dispose();
+            }
+        };
+        p.setOpaque(false);
+        p.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
+        return p;
     }
 
     public void ContenedorComprar() { }
