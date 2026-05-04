@@ -9,7 +9,7 @@ import estadio.Asientos;
 import estadio.Categoria;
 import estadio.EstadioClass;
 
-public class MenuPU extends JFrame
+public class MenuPrincipal extends JFrame
 {
 
     static final Color VerdeB = new Color(76, 175, 80);
@@ -35,7 +35,7 @@ public class MenuPU extends JFrame
     private JPanel navPanel;      // referencia para poder reemplazarlo
     private JPanel panelBotones;  // referencia para actualizar botones
 
-    public MenuPU()
+    public MenuPrincipal()
     {
         setTitle("Menu Principal Usuario");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -675,7 +675,7 @@ public class MenuPU extends JFrame
     {
         SwingUtilities.invokeLater(() ->
         {
-            MenuPU ventana = new MenuPU();
+            MenuPrincipal ventana = new MenuPrincipal();
             ventana.ContenedorPrincipal();
             ventana.setVisible(true);
         });
