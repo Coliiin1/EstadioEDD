@@ -2,6 +2,8 @@ package GUI;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 public class Login extends JFrame{
@@ -59,6 +61,14 @@ public class Login extends JFrame{
                 }
             }
         });
+        txtUser.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    txtPass.requestFocus(); // Pasa el cursor a la contraseña
+                }
+            }
+        });
         loginPanel.add(txtUser);
 
         borrar = new JButton("Limpiar Campos");
@@ -89,6 +99,15 @@ public class Login extends JFrame{
                 if (txtPass.getText().isEmpty()) {
                     txtPass.setText("Contraseña");// restaura el texto de la barra de busqueda
                     txtPass.setForeground(Color.GRAY);
+                }
+            }
+        });
+        
+        txtPass.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    btnLogin.doClick(); 
                 }
             }
         });

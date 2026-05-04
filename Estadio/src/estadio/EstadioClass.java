@@ -11,82 +11,88 @@ package estadio;
 public class EstadioClass
 {
 
-    private boolean[][] asientosVIP;
-    private boolean[][] asientosGen;
-    private boolean[][] asientosPref;
-
-    /**
-     * Esto significa que cada categoria tendria 150 asientos ya se le puede
-     * modificar si quieren. Y cada que se crea un objeto Estadio,
-     * automaticamente se inicializan estas tres matrices dejandolas todas
-     * disponibles
-     */
-    private static final int filas = 10;
-    private static final int columnas = 15;
+    private Asientos[][] matriz;
+    private int FILAS = 10;
+    private int COLUMNAS = 30;
 
     public EstadioClass()
     {
-        asientosVIP = new boolean[filas][columnas];
-        asientosGen = new boolean[filas][columnas];
-        asientosPref = new boolean[filas][columnas];
-    }
-
-    /**
-     * isDisponible llama a getMatriz y revisa si el asiento es false. El
-     * operador "!" invierte el valor para que, si es false (libre), el metodo
-     * devuelva true (si, esta disponible).
-     */
-    public boolean isDisponible(Categoria cat, int fila, int col)
-    {
-        return !getMatriz(cat)[fila][col];
-    }
-
-    public void ocuparAsiento(Categoria cat, int fila, int col)
-    {
-        if (!isDisponible(cat, fila, col))
+        matriz = new Asientos[FILAS][COLUMNAS];
+        for (int f = 0; f < FILAS; f++)
         {
-            throw new IllegalStateException("El asiento ya esta ocupado.");
+            for (int c = 0; c < COLUMNAS; c++)
+            {
+                matriz[f][c] = new Asientos(f, c);
+            }
         }
-        getMatriz(cat)[fila][col] = false;
     }
 
-    public boolean[][] getMatriz(Categoria cat)
+    public boolean isDisponible(int fila, int col)
     {
-        return switch (cat)
+        return getMatriz()[fila][col].getEstado() == EstadoAsientos.DISPONIBLE;
+    }
+
+    public Asientos getAsiento(int fila, int col)
+    {
+        return matriz[fila][col];
+    }
+
+    /**
+     * @return the matriz
+     */
+    public Asientos[][] getMatriz()
+    {
+        return matriz;
+    }
+
+    //modificar la categoria por el admin
+    public void asignarCategoria(int fila, int col, Categoria cat)
+    {
+        matriz[fila][col].setCategoria(cat);
+    }
+
+    //se marca como Ocupado al confirmar la compra
+    public void ocuparAsiento(int fila, int col)
+    {
+        if (!isDisponible(fila, col))
         {
-            case VIP ->
-                asientosVIP;
-            case GENERAL ->
-                asientosGen;
-            case PREFERENCIAL ->
-                asientosPref;
-        };
+            throw new IllegalStateException("El asiento ya está ocupado.");
+        }
+        matriz[fila][col].setEstado(EstadoAsientos.OCUPADO);
+    }
+
+    public void seleccionarAsiento(int fila, int col)
+    {
+        if (!isDisponible(fila, col))
+        {
+            throw new IllegalStateException("El asiento no está disponible.");
+        }
+        matriz[fila][col].setEstado(EstadoAsientos.SELECCIONADO);
+    }
+
+    public void deseleccionarAsiento(int fila, int col)
+    {
+        matriz[fila][col].setEstado(EstadoAsientos.DISPONIBLE);
+    }
+
+    public String generarIdAsiento(int fila, int col)
+    {
+        return "F" + (fila + 1) + "-C" + (col + 1);
     }
 
     /**
-     * Como habia comentado Faxz, el ID de los asientos podria ser
-     * "F3-C7" para fila 2 y columna 6 ya que el +1 incremenda ese indice
-     * (base 0-> base 1) 
+     * @return the FILAS
      */
-    public String generarIDAsientos(int fila, int col)
+    public int getFILAS()
     {
-        return "F" + (fila+1) + "-C" + (col+1);
+        return FILAS;
     }
 
     /**
-     * @return the filas
+     * @return the COLUMNAS
      */
-    public static int getFilas()
+    public int getCOLUMNAS()
     {
-        return filas;
+        return COLUMNAS;
     }
-
-    /**
-     * @return the columnas
-     */
-    public static int getColumnas()
-    {
-        return columnas;
-    }
-
 }
