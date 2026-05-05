@@ -18,8 +18,6 @@ public class Asientos
     private final int columna;
     private Categoria categoria;//sera asignada por el Admin
     private EstadoAsientos estado;//Disponible, seleccionado, ocupado
-    private boolean ocupado     = false;
-    private boolean seleccionado = false; 
 
     public Asientos(int fila, int columna)
     {
@@ -86,14 +84,4 @@ public class Asientos
     {
         return "F" + (fila + 1) + "-C" + (columna + 1);
     }
-    
-    public boolean isSeleccionado()           
-    { 
-        return seleccionado; 
-    }   // <-- agregar
-    public void setSeleccionado(boolean b) 
-    { 
-        this.seleccionado = b; 
-    }
-    
 }

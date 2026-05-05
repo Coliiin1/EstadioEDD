@@ -7,38 +7,27 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 public class Login extends JFrame{
-    
     Color VerdeB = new Color(19, 50, 21); 
     Color BeigeB = new Color(243, 232, 211); 
     public JButton btnLogin;
     public JButton btnSignup;
     public JButton btnIgnore;
-    private final String usuario = "Admin";
-    private final String contra = "12345";
+    public String usuario = "Admin";
+    public String contra = "12345";
     
     public JButton borrar;
     
     public JTextField txtUser;
-    public JPasswordField txtPass;
+    public JTextField txtPass;
     
     public JLabel error;
     public Login() {
         setTitle("Inicio de Sesión");
         setSize(700, 400);
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
         setLayout(new GridLayout(1, 2)); // dos paneles lado a lado
-    }
-    
-    public boolean Entrar(String User, String pasw){
-        if (User.equals(usuario) && pasw.equals(contra)) {
-            txtUser.setText("");
-            txtPass.setText("");
-            return true;
-        }
-        JOptionPane.showMessageDialog(null, "Credenciales Invalidas");
-        return false;
     }
     
     public void Contenedor(){
@@ -93,7 +82,7 @@ public class Login extends JFrame{
         });
         
         loginPanel.add(borrar);
-        txtPass = new JPasswordField("Contraseña");
+        txtPass = new JTextField("Contraseña");
         txtPass.setForeground(Color.GRAY);
         txtPass.setBounds(60, 130, 250, 35);
         txtPass.addFocusListener(new FocusAdapter() {
@@ -155,10 +144,19 @@ public class Login extends JFrame{
         innerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         innerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         
+
         rightPanel.add(innerPanel);
+        
+        
         
         // Agregar paneles al frame
         add(loginPanel);
         add(rightPanel);
+    }
+    
+    public static void main(){
+        Login n = new Login();
+        n.Contenedor();
+        n.setVisible(true);
     }
 }
