@@ -13,15 +13,15 @@ import com.toedter.calendar.JDateChooser;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+public class MenuPrincipal extends JFrame
+{
 
-public class MenuPrincipal extends JFrame {
-
-    static final Color VerdeB       = new Color(76, 175, 80);
-    static final Color BeigeB       = new Color(243, 232, 211);
+    static final Color VerdeB = new Color(76, 175, 80);
+    static final Color BeigeB = new Color(243, 232, 211);
     static final Color VerdeTarjeta = new Color(27, 94, 32);
-    static final Color COLOR_VIP    = new Color(0, 0, 142);
-    static final Color COLOR_PREF   = new Color(120, 0, 142);
-    static final Color COLOR_GEN    = new Color(125, 124, 121);
+    static final Color COLOR_VIP = new Color(0, 0, 142);
+    static final Color COLOR_PREF = new Color(120, 0, 142);
+    static final Color COLOR_GEN = new Color(125, 124, 121);
     static final Color COLOR_GRATIS = new Color(236, 239, 241);
     static final Color COLOR_INACTIVO = new Color(60, 60, 60);
 
@@ -31,14 +31,15 @@ public class MenuPrincipal extends JFrame {
     private Login login = new Login();
 
     public JButton btnEventoPrincipal, btnInfoGeneral, btnIngresa,
-                   btnComprar, btnSalir, btnModificar;
+            btnComprar, btnSalir, btnModificar;
     public JPanel panelImagen, panelLateral;
     private boolean Admin = false;
     private JPanel margenCentral, navPanel, panelBotones;
 
     public Evento eventoPrincipoal;
 
-    public MenuPrincipal() {
+    public MenuPrincipal()
+    {
         setTitle("Menu Principal Usuario");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1100, 700));
@@ -47,14 +48,21 @@ public class MenuPrincipal extends JFrame {
         this.estadio = new EstadioClass();
         this.eventoPrincipoal = new Evento("eventoPrincipal", estadio);
         this.botonesAsientos = new JButton[10][30];
-        addComponentListener(new ComponentAdapter() {
-            @Override public void componentResized(ComponentEvent e) { revalidate(); repaint(); }
+        addComponentListener(new ComponentAdapter()
+        {
+            @Override
+            public void componentResized(ComponentEvent e)
+            {
+                revalidate();
+                repaint();
+            }
         });
         setLayout(new BorderLayout());
         getContentPane().setBackground(BeigeB);
     }
 
-    public void ContenedorPrincipal() {
+    public void ContenedorPrincipal()
+    {
         margenCentral = new JPanel(new BorderLayout());
         margenCentral.setBackground(BeigeB);
         actualizarNavbar();
@@ -66,13 +74,17 @@ public class MenuPrincipal extends JFrame {
     // =========================================================
     // NAVBAR DINÁMICA
     // =========================================================
-    private void actualizarNavbar() {
+    private void actualizarNavbar()
+    {
         JPanel panelFondo = panelRedondeado(VerdeTarjeta, 40, new BorderLayout());
         panelFondo.setBorder(new EmptyBorder(10, 15, 10, 15));
 
         Image imagenLogo = new ImageIcon("src/Imagenes/Logo.jpg").getImage();
-        JLabel lblLogo = new JLabel() {
-            @Override protected void paintComponent(Graphics g) {
+        JLabel lblLogo = new JLabel()
+        {
+            @Override
+            protected void paintComponent(Graphics g)
+            {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setClip(new Ellipse2D.Float(0, 0, getWidth(), getHeight()));
@@ -93,12 +105,13 @@ public class MenuPrincipal extends JFrame {
         izquierda.add(lblNombre);
 
         btnEventoPrincipal = crearBotonNav("Evento Principal");
-        btnInfoGeneral     = crearBotonNav("Informacion General");
-        btnIngresa         = crearBotonNav("Ingresa");
-        btnModificar       = crearBotonNav("Modificar Evento");
-        btnSalir           = crearBotonNav("Cerrar sesion");
+        btnInfoGeneral = crearBotonNav("Informacion General");
+        btnIngresa = crearBotonNav("Ingresa");
+        btnModificar = crearBotonNav("Modificar Evento");
+        btnSalir = crearBotonNav("Cerrar sesion");
 
-        if (Admin) {
+        if (Admin)
+        {
             panelBotones = new JPanel(new GridLayout(1, 4, 15, 0));
             panelBotones.setOpaque(false);
             panelBotones.setPreferredSize(new Dimension(850, 45));
@@ -106,7 +119,8 @@ public class MenuPrincipal extends JFrame {
             panelBotones.add(btnInfoGeneral);
             panelBotones.add(btnModificar);
             panelBotones.add(btnSalir);
-        } else {
+        } else
+        {
             panelBotones = new JPanel(new GridLayout(1, 3, 15, 0));
             panelBotones.setOpaque(false);
             panelBotones.setPreferredSize(new Dimension(650, 45));
@@ -118,7 +132,10 @@ public class MenuPrincipal extends JFrame {
         panelFondo.add(izquierda, BorderLayout.WEST);
         panelFondo.add(panelBotones, BorderLayout.CENTER);
 
-        if (navPanel != null) remove(navPanel);
+        if (navPanel != null)
+        {
+            remove(navPanel);
+        }
         navPanel = wrapConMargen(panelFondo, 15, 15, 10, 15);
         navPanel.setBackground(BeigeB);
         add(navPanel, BorderLayout.NORTH);
@@ -128,20 +145,28 @@ public class MenuPrincipal extends JFrame {
         btnEventoPrincipal.addActionListener(e -> mostrarContenido(ContenedorPPrincipal()));
         btnInfoGeneral.addActionListener(e -> mostrarContenido(ContenedorInfo()));
 
-        if (Admin) {
+        if (Admin)
+        {
             btnModificar.addActionListener(e -> mostrarContenido(ContenedorModEvento()));
-            btnSalir.addActionListener(e -> {
+            btnSalir.addActionListener(e ->
+            {
                 Admin = false;
                 actualizarNavbar();
                 mostrarContenido(ContenedorPPrincipal());
             });
-        } else {
-            btnIngresa.addActionListener(e -> {
+        } else
+        {
+            btnIngresa.addActionListener(e ->
+            {
                 login.setVisible(true);
                 for (ActionListener l : login.btnLogin.getActionListeners())
+                {
                     login.btnLogin.removeActionListener(l);
-                login.btnLogin.addActionListener(f -> {
-                    if (login.Entrar(login.txtUser.getText(), login.txtPass.getText())){
+                }
+                login.btnLogin.addActionListener(f ->
+                {
+                    if (login.Entrar(login.txtUser.getText(), login.txtPass.getText()))
+                    {
                         login.setVisible(false);
                         Admin = true;
                         actualizarNavbar();
@@ -155,10 +180,14 @@ public class MenuPrincipal extends JFrame {
     // =========================================================
     // CONTENEDOR PRINCIPAL (imagen evento + lateral)
     // =========================================================
-    public JPanel ContenedorPPrincipal() {
+    public JPanel ContenedorPPrincipal()
+    {
         Image imagenEvento = new ImageIcon("src/Imagenes/Logo.jpg").getImage();
-        panelImagen = new JPanel() {
-            @Override protected void paintComponent(Graphics g) {
+        panelImagen = new JPanel()
+        {
+            @Override
+            protected void paintComponent(Graphics g)
+            {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -201,15 +230,18 @@ public class MenuPrincipal extends JFrame {
     // modoCompra=false → asientos clickeables para asignar categoría (admin)
     // =========================================================
     private JPanel crearMatrizAsientos(boolean modoCompra,
-                                       JComboBox<Categoria> comboCategoria) {
+            JComboBox<Categoria> comboCategoria)
+    {
 
+        final int MAX_BOLETOS = 5;
         final Color COLOR_INACTIVO = new Color(60, 60, 60);
         Font fontLabel = new Font("Arial", Font.PLAIN, 16);
 
         JPanel panelFilas = new JPanel(new GridLayout(10, 1, 0, 3));
         panelFilas.setOpaque(false);
         panelFilas.setBorder(new EmptyBorder(6, 0, 6, 8));
-        for (int f = 9; f >= 0; f--) {
+        for (int f = 9; f >= 0; f--)
+        {
             JLabel lbl = new JLabel("F" + (f + 1), SwingConstants.RIGHT);
             lbl.setFont(fontLabel);
             panelFilas.add(lbl);
@@ -220,8 +252,10 @@ public class MenuPrincipal extends JFrame {
                 new RoundedBorder(20, VerdeTarjeta, 5),
                 new EmptyBorder(6, 6, 6, 6)));
 
-        for (int f = 9; f >= 0; f--) {
-            for (int c = 0; c < 30; c++) {
+        for (int f = 9; f >= 0; f--)
+        {
+            for (int c = 0; c < 30; c++)
+            {
                 Asientos asiento = estadio.getAsiento(f, c);
                 JButton btn = new JButton();
                 btn.setPreferredSize(new Dimension(25, 25));
@@ -231,19 +265,42 @@ public class MenuPrincipal extends JFrame {
 
                 final int fila = f, col = c;
 
-                if (modoCompra) {
-                    // Toggle selección; solo si el botón está habilitado (misma categoría)
-                    btn.addActionListener(e -> {
-                        if (!asiento.isDisponible() && btn.isEnabled()) {
-                            boolean sel = !asiento.isSeleccionado();
-                            asiento.setSeleccionado(sel);
-                            if (sel) {
-                                btn.setBackground(Color.YELLOW);
-                                btn.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 2));
-                            } else {
-                                actualizarColorBoton(btn, asiento.getCategoria());
-                                btn.setBorder(null);
+                //Aqui estaba el problema
+                if (!modoCompra)
+                {
+                    //Esto solo es para que el adminasigne la categoria al asiento inmediatamente 
+                    btn.addActionListener(e ->
+                    {
+                        estadio.asignarCategoria(fila, col, categoriaSeleccionada);
+                        actualizarColorBoton(btn, categoriaSeleccionada);
+                    });
+                } else
+                {
+                    btn.addActionListener(e ->
+                    {
+                        //solo actua si el boton esta habilitado
+                        if (!btn.isEnabled())
+                        {
+                            return;
+                        }
+                        if (!asiento.isSeleccionado())
+                        {
+                            //si se intenta seleccionar
+                            long seleccionados = contarSeleccionados();
+                            if (seleccionados >= MAX_BOLETOS)
+                            {
+                                JOptionPane.showMessageDialog(null, "Limite de " + MAX_BOLETOS + " boletos por transaccion", "Limite alcanzado", JOptionPane.INFORMATION_MESSAGE);
+                                return;//no cambia nada
                             }
+                            asiento.setSeleccionado(true);
+                            btn.setBackground((Color.YELLOW));
+                            btn.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 2));
+                        } else
+                        {
+                            //deseleccionar
+                            asiento.setSeleccionado(false);
+                            actualizarColorBoton(btn, asiento.getCategoria());
+                            btn.setBorder(null);
                         }
                     });
                 }
@@ -254,44 +311,58 @@ public class MenuPrincipal extends JFrame {
         }
 
         // Filtrado por categoría: solo en modo compra
-        if (modoCompra && comboCategoria != null) {
+        if (modoCompra && comboCategoria != null)
+        {
             // Aplica filtro inicial con la categoría ya seleccionada en el combo
             filtrarMatrizPorCategoria((Categoria) comboCategoria.getSelectedItem(), COLOR_INACTIVO);
 
-            comboCategoria.addActionListener(e -> {
+            comboCategoria.addActionListener(e ->
+            {
                 Categoria nueva = (Categoria) comboCategoria.getSelectedItem();
                 // Limpia selecciones previas antes de cambiar de categoría
                 for (int f2 = 0; f2 < 10; f2++)
-                    for (int c2 = 0; c2 < 30; c2++) {
+                {
+                    for (int c2 = 0; c2 < 30; c2++)
+                    {
                         Asientos a = estadio.getAsiento(f2, c2);
-                        if (a.isSeleccionado()) {
+                        if (a.isSeleccionado())
+                        {
                             a.setSeleccionado(false);
                             actualizarColorBoton(botonesAsientos[f2][c2], a.getCategoria());
                             botonesAsientos[f2][c2].setBorder(null);
                         }
                     }
+                }
                 filtrarMatrizPorCategoria(nueva, COLOR_INACTIVO);
             });
         }
-        return panelMatriz;
+        JPanel contenedorMatriz = new JPanel(new BorderLayout(0, 0));
+        contenedorMatriz.setOpaque(false);
+        contenedorMatriz.add(panelFilas, BorderLayout.WEST);
+        contenedorMatriz.add(panelMatriz, BorderLayout.CENTER);
+        return contenedorMatriz;
     }
 
-
     // =========================================================
-
     // Habilita/resalta asientos de la categoría elegida; apaga y deshabilita los demás
-    private void filtrarMatrizPorCategoria(Categoria categoriaActiva, Color colorInactivo) {
-        for (int f = 0; f < 10; f++) {
-            for (int c = 0; c < 30; c++) {
+    private void filtrarMatrizPorCategoria(Categoria categoriaActiva, Color colorInactivo)
+    {
+        for (int f = 0; f < 10; f++)
+        {
+            for (int c = 0; c < 30; c++)
+            {
                 Asientos asiento = estadio.getAsiento(f, c);
                 JButton btn = botonesAsientos[f][c];
-                if (asiento.getCategoria() == categoriaActiva && !asiento.isDisponible()) {
+                //solo era el !
+                if (asiento.getCategoria() == categoriaActiva && !asiento.isDisponible())
+                {
                     // Asiento disponible de la categoría seleccionada: activo con su color real
                     btn.setEnabled(true);
                     actualizarColorBoton(btn, categoriaActiva);
                     btn.setOpaque(true);
                     btn.setBorder(null);
-                } else {
+                } else
+                {
                     // Asiento de otra categoría u ocupado: apagado e ininteractuable
                     btn.setEnabled(false);
                     btn.setBackground(colorInactivo);
@@ -305,10 +376,11 @@ public class MenuPrincipal extends JFrame {
     // Panel lateral: leyenda de categorías + total + botón confirmar
     // Centro: matriz de asientos en modo compra
     // =========================================================
-    public JPanel ContenedorComprar() {
+    public JPanel ContenedorComprar()
+    {
 
         Font fontLabel = new Font("Arial", Font.BOLD, 15);
-        Font fontInfo  = new Font("Arial", Font.PLAIN, 14);
+        Font fontInfo = new Font("Arial", Font.PLAIN, 14);
 
         // --- COMBO DE CATEGORÍA (se crea ANTES que la matriz para pasarlo al filtro) ---
         JLabel lblCategoria = new JLabel("Categoría:");
@@ -335,9 +407,9 @@ public class MenuPrincipal extends JFrame {
         // Leyenda de colores
         JPanel panelLeyenda = new JPanel(new GridLayout(3, 1, 5, 8));
         panelLeyenda.setOpaque(false);
-        panelLeyenda.add(filaLeyenda("VIP",          COLOR_VIP,    fontInfo));
-        panelLeyenda.add(filaLeyenda("Preferencial", COLOR_PREF,   fontInfo));
-        panelLeyenda.add(filaLeyenda("General",      COLOR_GEN,    fontInfo));
+        panelLeyenda.add(filaLeyenda("VIP", COLOR_VIP, fontInfo));
+        panelLeyenda.add(filaLeyenda("Preferencial", COLOR_PREF, fontInfo));
+        panelLeyenda.add(filaLeyenda("General", COLOR_GEN, fontInfo));
 
         // Panel combo + leyenda seleccionado
         JPanel panelFiltro = new JPanel(new GridLayout(4, 1, 5, 8));
@@ -345,7 +417,7 @@ public class MenuPrincipal extends JFrame {
         panelFiltro.add(lblCategoria);
         panelFiltro.add(comboCategoria);
         panelFiltro.add(filaLeyenda("Seleccionado", Color.YELLOW, fontInfo));
-        panelFiltro.add(filaLeyenda("No disponible", new Color(60,60,60), fontInfo));
+        panelFiltro.add(filaLeyenda("No disponible", new Color(60, 60, 60), fontInfo));
 
         JLabel lblTotal = new JLabel("Total: $0.00");
         lblTotal.setFont(fontLabel);
@@ -355,7 +427,8 @@ public class MenuPrincipal extends JFrame {
         JButton btnConfirmar = crearBotonRedondeado("Confirmar compra", VerdeTarjeta);
         btnConfirmar.setFont(new Font("Arial", Font.BOLD, 14));
         btnConfirmar.setPreferredSize(new Dimension(210, 45));
-        btnConfirmar.addActionListener(e -> {
+        btnConfirmar.addActionListener(e ->
+        {
             double total = calcularTotal();
             lblTotal.setText(String.format("Total: $%.2f", total));
             JOptionPane.showMessageDialog(this,
@@ -364,18 +437,18 @@ public class MenuPrincipal extends JFrame {
         });
 
         // Actualiza el label de total cada vez que cambia la categoría
-        comboCategoria.addActionListener(e ->
-            lblTotal.setText("Total: $0.00"));
+        comboCategoria.addActionListener(e
+                -> lblTotal.setText("Total: $0.00"));
 
         JPanel panelNorth = new JPanel(new BorderLayout(0, 10));
         panelNorth.setOpaque(false);
-        panelNorth.add(lblTitulo,    BorderLayout.NORTH);
+        panelNorth.add(lblTitulo, BorderLayout.NORTH);
         panelNorth.add(panelLeyenda, BorderLayout.CENTER);
-        panelNorth.add(panelFiltro,  BorderLayout.SOUTH);
+        panelNorth.add(panelFiltro, BorderLayout.SOUTH);
 
         JPanel panelSouth = new JPanel(new BorderLayout(0, 10));
         panelSouth.setOpaque(false);
-        panelSouth.add(lblTotal,     BorderLayout.NORTH);
+        panelSouth.add(lblTotal, BorderLayout.NORTH);
         panelSouth.add(btnConfirmar, BorderLayout.CENTER);
 
         panelLateralCompra.add(panelNorth, BorderLayout.NORTH);
@@ -388,7 +461,7 @@ public class MenuPrincipal extends JFrame {
         JPanel contenedor = panelRedondeado(new Color(230, 220, 200), 45, new BorderLayout(15, 0));
         contenedor.setBorder(new EmptyBorder(15, 15, 15, 15));
         contenedor.add(panelLateralCompra, BorderLayout.WEST);
-        contenedor.add(matrizAsientos,     BorderLayout.CENTER);
+        contenedor.add(matrizAsientos, BorderLayout.CENTER);
 
         JPanel margen = wrapConMargen(contenedor, 0, 15, 15, 15);
         margen.setBackground(BeigeB);
@@ -396,7 +469,8 @@ public class MenuPrincipal extends JFrame {
     }
 
     // Fila de leyenda: cuadro de color + etiqueta
-    private JPanel filaLeyenda(String texto, Color color, Font font) {
+    private JPanel filaLeyenda(String texto, Color color, Font font)
+    {
         JPanel fila = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         fila.setOpaque(false);
         JPanel cuadro = new JPanel();
@@ -412,20 +486,45 @@ public class MenuPrincipal extends JFrame {
     }
 
     // Suma el precio de los asientos marcados como seleccionados
-    private double calcularTotal() {
+    private double calcularTotal()
+    {
         double total = 0;
         for (int f = 0; f < 10; f++)
-            for (int c = 0; c < 30; c++) {
+        {
+            for (int c = 0; c < 30; c++)
+            {
                 Asientos a = estadio.getAsiento(f, c);
-                if (a.isSeleccionado()) total += a.getCategoria().getPrecio();
+                if (a.isSeleccionado())
+                {
+                    total += a.getCategoria().getPrecio();
+                }
             }
+        }
         return total;
+    }
+
+    //Para contar seleccionados sin recorrer dos veces 
+    private long contarSeleccionados()
+    {
+        long count = 0;
+        for (int f = 0; f < 10; f++)
+        {
+            for (int c = 0; c < 30; c++)
+            {
+                if (estadio.getAsiento(f, c).isSeleccionado())
+                {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     // =========================================================
     // CONTENEDOR MODIFICAR EVENTO (reutiliza crearMatrizAsientos)
     // =========================================================
-    public JPanel ContenedorModEvento() {
+    public JPanel ContenedorModEvento()
+    {
 
         JPanel panelContenedor = new JPanel(new BorderLayout(0, 0));
         panelContenedor.setBackground(BeigeB);
@@ -438,7 +537,7 @@ public class MenuPrincipal extends JFrame {
                 new EmptyBorder(15, 15, 15, 15)));
 
         Font fontLabel = new Font("Arial", Font.PLAIN, 16);
-        Font fontTxt   = new Font("Arial", Font.PLAIN, 16);
+        Font fontTxt = new Font("Arial", Font.PLAIN, 16);
         int x = 20, w = 240;
 
         JLabel lblNombre = new JLabel("Nombre del Evento");
@@ -468,21 +567,23 @@ public class MenuPrincipal extends JFrame {
         GPrecio.setOpaque(false);
         GPrecio.setFont(fontLabel);
         GPrecio.setBounds(160, 190, 150, 30);
-        
-        
-        
-        comboCategoria.addActionListener(e -> {
+
+        comboCategoria.addActionListener(e ->
+        {
             categoriaSeleccionada = (Categoria) comboCategoria.getSelectedItem();
             txtCosto.setText(String.valueOf(categoriaSeleccionada.getPrecio()));
         });
 
-        GPrecio.addActionListener(e -> {
-            try {
-                    categoriaSeleccionada.setPrecio(Double.parseDouble(txtCosto.getText()));
-                    comboCategoria.repaint();
-                    comboCategoria.validate();
-                }
-            catch (NumberFormatException ex) { }
+        GPrecio.addActionListener(e ->
+        {
+            try
+            {
+                categoriaSeleccionada.setPrecio(Double.parseDouble(txtCosto.getText()));
+                comboCategoria.repaint();
+                comboCategoria.validate();
+            } catch (NumberFormatException ex)
+            {
+            }
         });
 
         // --- FECHA con DatePicker ---
@@ -510,41 +611,44 @@ public class MenuPrincipal extends JFrame {
         btnGuardar.setBackground(Color.WHITE);
         btnGuardar.setFocusPainted(false);
         btnGuardar.setBounds(x + 70, 460, 100, 30);
-        
-        
 
         // Ejemplo de cómo obtener la fecha al guardar
-        btnGuardar.addActionListener(e -> {
+        btnGuardar.addActionListener(e ->
+        {
             Date fechaSeleccionada = dateChooser.getDate();
-            if (fechaSeleccionada != null) {
+            if (fechaSeleccionada != null)
+            {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 String fechaTexto = sdf.format(fechaSeleccionada);
                 System.out.println("Fecha seleccionada: " + fechaTexto);
-            } else {
+            } else
+            {
                 System.out.println("No se seleccionó fecha");
             }
-            
-            try {
+
+            try
+            {
                 eventoPrincipoal.Fecha = dateChooser.getDate();
                 eventoPrincipoal.nombreEvento = txtNombre.getText();
                 eventoPrincipoal.Descripcion = txtDesc.getText();
                 eventoPrincipoal.ImpEvento();
-            } catch(Exception ex) {
+            } catch (Exception ex)
+            {
                 JOptionPane.showMessageDialog(null, "Llena Todos los Campos");
             }
-            
+
         });
 
-        panelConfiguracion.add(lblNombre);     
+        panelConfiguracion.add(lblNombre);
         panelConfiguracion.add(txtNombre);
-        panelConfiguracion.add(lblSeleccionar); 
+        panelConfiguracion.add(lblSeleccionar);
         panelConfiguracion.add(comboCategoria);
-        panelConfiguracion.add(lblCosto);      
+        panelConfiguracion.add(lblCosto);
         panelConfiguracion.add(txtCosto);
         panelConfiguracion.add(GPrecio);
-        panelConfiguracion.add(lblFecha);      
+        panelConfiguracion.add(lblFecha);
         panelConfiguracion.add(dateChooser);
-        panelConfiguracion.add(lblDesc);       
+        panelConfiguracion.add(lblDesc);
         panelConfiguracion.add(scrollDesc);
         panelConfiguracion.add(btnGuardar);
 
@@ -563,15 +667,21 @@ public class MenuPrincipal extends JFrame {
         return panelContenedor;
     }
 
-    private void actualizarColorBoton(JButton btn, Categoria cat) {
-        switch (cat) {
-            case VIP         -> btn.setBackground(COLOR_VIP);
-            case PREFERENCIAL -> btn.setBackground(COLOR_PREF);
-            case GENERAL     -> btn.setBackground(COLOR_GEN);
+    private void actualizarColorBoton(JButton btn, Categoria cat)
+    {
+        switch (cat)
+        {
+            case VIP ->
+                btn.setBackground(COLOR_VIP);
+            case PREFERENCIAL ->
+                btn.setBackground(COLOR_PREF);
+            case GENERAL ->
+                btn.setBackground(COLOR_GEN);
         }
     }
 
-    public void mostrarContenido(JPanel contenido) {
+    public void mostrarContenido(JPanel contenido)
+    {
         margenCentral.removeAll();
         margenCentral.add(contenido, BorderLayout.CENTER);
         margenCentral.revalidate();
@@ -581,7 +691,8 @@ public class MenuPrincipal extends JFrame {
     // =========================================================
     // CONTENEDOR INFO
     // =========================================================
-    public JPanel ContenedorInfo() {
+    public JPanel ContenedorInfo()
+    {
         JPanel panelIzquierdo = panelRedondeado(BeigeB, 40, new BorderLayout());
         panelIzquierdo.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
 
@@ -622,9 +733,13 @@ public class MenuPrincipal extends JFrame {
     // =========================================================
     // HELPERS
     // =========================================================
-    private JPanel crearPanelImagen(Image img) {
-        JPanel p = new JPanel() {
-            @Override protected void paintComponent(Graphics g) {
+    private JPanel crearPanelImagen(Image img)
+    {
+        JPanel p = new JPanel()
+        {
+            @Override
+            protected void paintComponent(Graphics g)
+            {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -638,9 +753,13 @@ public class MenuPrincipal extends JFrame {
         return p;
     }
 
-    private JPanel panelRedondeado(Color color, int radio, LayoutManager layout) {
-        JPanel p = new JPanel(layout) {
-            @Override protected void paintComponent(Graphics g) {
+    private JPanel panelRedondeado(Color color, int radio, LayoutManager layout)
+    {
+        JPanel p = new JPanel(layout)
+        {
+            @Override
+            protected void paintComponent(Graphics g)
+            {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(color);
@@ -653,7 +772,8 @@ public class MenuPrincipal extends JFrame {
         return p;
     }
 
-    private JPanel wrapConMargen(JPanel inner, int top, int left, int bottom, int right) {
+    private JPanel wrapConMargen(JPanel inner, int top, int left, int bottom, int right)
+    {
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setOpaque(false);
         wrapper.setBorder(new EmptyBorder(top, left, bottom, right));
@@ -661,15 +781,20 @@ public class MenuPrincipal extends JFrame {
         return wrapper;
     }
 
-    private JButton crearBotonNav(String texto) {
+    private JButton crearBotonNav(String texto)
+    {
         JButton btn = crearBotonRedondeado(texto, VerdeB);
         btn.setFont(new Font("Arial", Font.BOLD, 15));
         return btn;
     }
 
-    private JButton crearBotonRedondeado(String texto, Color color) {
-        JButton btn = new JButton(texto) {
-            @Override protected void paintComponent(Graphics g) {
+    private JButton crearBotonRedondeado(String texto, Color color)
+    {
+        JButton btn = new JButton(texto)
+        {
+            @Override
+            protected void paintComponent(Graphics g)
+            {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(getBackground());
@@ -685,23 +810,39 @@ public class MenuPrincipal extends JFrame {
         btn.setForeground(Color.WHITE);
         btn.setBackground(color);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.addMouseListener(new MouseAdapter() {
-            @Override public void mouseEntered(MouseEvent e) { btn.setBackground(color.brighter()); }
-            @Override public void mouseExited(MouseEvent e)  { btn.setBackground(color); }
+        btn.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                btn.setBackground(color.brighter());
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                btn.setBackground(color);
+            }
         });
         return btn;
     }
 
-    class RoundedBorder extends AbstractBorder {
+    class RoundedBorder extends AbstractBorder
+    {
+
         private final int radius, thickness;
         private final Color color;
 
-        RoundedBorder(int radius, Color color, int thickness) {
-            this.radius = radius; this.color = color; this.thickness = thickness;
+        RoundedBorder(int radius, Color color, int thickness)
+        {
+            this.radius = radius;
+            this.color = color;
+            this.thickness = thickness;
         }
 
         @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height)
+        {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(color);
@@ -710,11 +851,17 @@ public class MenuPrincipal extends JFrame {
             g2.dispose();
         }
 
-        @Override public Insets getBorderInsets(Component c) { return new Insets(10, 10, 10, 10); }
+        @Override
+        public Insets getBorderInsets(Component c)
+        {
+            return new Insets(10, 10, 10, 10);
+        }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
+    public static void main(String[] args)
+    {
+        SwingUtilities.invokeLater(() ->
+        {
             MenuPrincipal ventana = new MenuPrincipal();
             ventana.ContenedorPrincipal();
             ventana.setVisible(true);
