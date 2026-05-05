@@ -55,7 +55,7 @@ public class MenuPrincipal extends JFrame
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setIconImage(getToolkit().getImage(getClass().getResource("/Imagenes/Logo.jpg")));
         this.estadio = new EstadioClass();
-        this.eventoPrincipoal = new Evento("eventoPrincipal", estadio);
+        this.eventoPrincipoal = new Evento("", estadio);
         this.botonesAsientos = new JButton[10][30];
         addComponentListener(new ComponentAdapter()
         {
@@ -211,6 +211,31 @@ public class MenuPrincipal extends JFrame
         panelLateral = panelRedondeado(VerdeB, 40, new BorderLayout());
         panelLateral.setPreferredSize(new Dimension(320, 0));
         panelLateral.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
+        
+        // -- Titulo del evento en un Label
+        JLabel labelTitulo = new JLabel(eventoPrincipoal.nombreEvento); // ajusta el campo según tu objeto
+        labelTitulo.setFont(new Font("Arial", Font.BOLD, 30));
+        labelTitulo.setForeground(BeigeB);
+        labelTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+        labelTitulo.setBorder(new EmptyBorder(15, 10, 5, 10));
+        
+        // --- TEXTAREA para desc del evento ---
+        JTextArea DescEvento = new JTextArea();
+        DescEvento.setLineWrap(true);
+        DescEvento.setWrapStyleWord(true);
+        DescEvento.setEditable(false);
+        DescEvento.setOpaque(false);
+        DescEvento.setText(eventoPrincipoal.Descripcion);
+        DescEvento.setFont(new Font("Arial", Font.PLAIN, 28));
+        DescEvento.setForeground(BeigeB);
+
+        JScrollPane scrollPane = new JScrollPane(DescEvento);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        // ---------------------------
 
         btnComprar = crearBotonRedondeado("Comprar", VerdeTarjeta);
         btnComprar.setFont(new Font("Arial", Font.BOLD, 18));
@@ -220,6 +245,9 @@ public class MenuPrincipal extends JFrame
         JPanel bottomLateral = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
         bottomLateral.setOpaque(false);
         bottomLateral.add(btnComprar);
+
+        panelLateral.add(labelTitulo, BorderLayout.NORTH);  // título arriba
+        panelLateral.add(scrollPane, BorderLayout.CENTER);   // textarea en medio
         panelLateral.add(bottomLateral, BorderLayout.SOUTH);
 
         JPanel contenedor = panelRedondeado(new Color(230, 220, 200), 45, new BorderLayout(15, 0));
@@ -680,28 +708,25 @@ public class MenuPrincipal extends JFrame
         btnGuardar.setBounds(x + 70, 480, 100, 30);
 
         // Ejemplo de cómo obtener la fecha al guardar
-        btnGuardar.addActionListener(e ->
-        {
+        btnGuardar.addActionListener(e -> {
             Date fechaSeleccionada = dateChooser.getDate();
-            if (fechaSeleccionada != null)
-            {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                String fechaTexto = sdf.format(fechaSeleccionada);
-                System.out.println("Fecha seleccionada: " + fechaTexto);
-            } else
-            {
-                System.out.println("No se seleccionó fecha");
+            String nombre = txtNombre.getText().trim();
+            String descripcion = txtDesc.getText().trim();
+
+            if (fechaSeleccionada == null || nombre.isEmpty() || descripcion.isEmpty() || eventoPrincipoal.rutaImg.equals("")) {
+                JOptionPane.showMessageDialog(null, "Llena todos los campos");
+                return; //detiene la ejecución, no guarda nada
             }
 
-            try
-            {
-                eventoPrincipoal.Fecha = dateChooser.getDate();
-                eventoPrincipoal.nombreEvento = txtNombre.getText();
-                eventoPrincipoal.Descripcion = txtDesc.getText();
+            try {
+                eventoPrincipoal.Fecha = fechaSeleccionada;
+                eventoPrincipoal.nombreEvento = nombre.toUpperCase();
+                eventoPrincipoal.Descripcion = descripcion;
                 eventoPrincipoal.ImpEvento();
-            } catch (Exception ex)
-            {
-                JOptionPane.showMessageDialog(null, "Llena Todos los Campos");
+                JOptionPane.showMessageDialog(null, "Evento Guardado Correctamente");
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error al guardar el evento");
             }
 
         });

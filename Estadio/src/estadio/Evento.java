@@ -30,6 +30,7 @@ public class Evento {
     public Evento(String nombreEvento, EstadioClass estadio) {
         this.nombreEvento = nombreEvento;
         this.estadio = estadio;
+        rutaImg = "";
         boletosVip=new LinkedList();
         boletosPreferencial=new LinkedList();
         boletosGeneral=new LinkedList();
