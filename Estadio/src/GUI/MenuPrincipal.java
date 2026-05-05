@@ -10,8 +10,12 @@ import static estadio.Categoria.GENERAL;
 import static estadio.Categoria.PREFERENCIAL;
 import static estadio.Categoria.VIP;
 import com.toedter.calendar.JDateChooser;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MenuPrincipal extends JFrame
 {
@@ -24,18 +28,20 @@ public class MenuPrincipal extends JFrame
     static final Color COLOR_GEN = new Color(125, 124, 121);
     static final Color COLOR_GRATIS = new Color(236, 239, 241);
     static final Color COLOR_INACTIVO = new Color(60, 60, 60);
-
+    public JLabel lblTotal;
     private EstadioClass estadio;
     private JButton[][] botonesAsientos;
     private Categoria categoriaSeleccionada = Categoria.GENERAL;
     private Login login = new Login();
-
+    private double total = 0;
     public JButton btnEventoPrincipal, btnInfoGeneral, btnIngresa,
             btnComprar, btnSalir, btnModificar;
     public JPanel panelImagen, panelLateral;
     private boolean Admin = false;
     private JPanel margenCentral, navPanel, panelBotones;
-
+    private JButton btnGuardarImg;
+    
+    
     public Evento eventoPrincipoal;
 
     public MenuPrincipal()
@@ -182,7 +188,7 @@ public class MenuPrincipal extends JFrame
     // =========================================================
     public JPanel ContenedorPPrincipal()
     {
-        Image imagenEvento = new ImageIcon("src/Imagenes/Logo.jpg").getImage();
+        Image imagenEvento = new ImageIcon(eventoPrincipoal.rutaImg).getImage();
         panelImagen = new JPanel()
         {
             @Override
@@ -295,12 +301,18 @@ public class MenuPrincipal extends JFrame
                             asiento.setSeleccionado(true);
                             btn.setBackground((Color.YELLOW));
                             btn.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 2));
+                            total = calcularTotal();
+                            lblTotal.setText(String.format("Total: $%.2f", total));
+                            lblTotal.repaint();
                         } else
                         {
                             //deseleccionar
                             asiento.setSeleccionado(false);
                             actualizarColorBoton(btn, asiento.getCategoria());
                             btn.setBorder(null);
+                            total = calcularTotal();
+                            lblTotal.setText(String.format("Total: $%.2f", total));
+                            lblTotal.repaint();
                         }
                     });
                 }
@@ -354,13 +366,14 @@ public class MenuPrincipal extends JFrame
                 Asientos asiento = estadio.getAsiento(f, c);
                 JButton btn = botonesAsientos[f][c];
                 //solo era el !
-                if (asiento.getCategoria() == categoriaActiva && !asiento.isDisponible())
+                if (asiento.getCategoria() == categoriaActiva && asiento.isDisponible())
                 {
                     // Asiento disponible de la categoría seleccionada: activo con su color real
                     btn.setEnabled(true);
                     actualizarColorBoton(btn, categoriaActiva);
                     btn.setOpaque(true);
                     btn.setBorder(null);
+                    
                 } else
                 {
                     // Asiento de otra categoría u ocupado: apagado e ininteractuable
@@ -419,7 +432,7 @@ public class MenuPrincipal extends JFrame
         panelFiltro.add(filaLeyenda("Seleccionado", Color.YELLOW, fontInfo));
         panelFiltro.add(filaLeyenda("No disponible", new Color(60, 60, 60), fontInfo));
 
-        JLabel lblTotal = new JLabel("Total: $0.00");
+        lblTotal = new JLabel("Total: $0.00");
         lblTotal.setFont(fontLabel);
         lblTotal.setForeground(Color.WHITE);
         lblTotal.setHorizontalAlignment(SwingConstants.CENTER);
@@ -429,8 +442,7 @@ public class MenuPrincipal extends JFrame
         btnConfirmar.setPreferredSize(new Dimension(210, 45));
         btnConfirmar.addActionListener(e ->
         {
-            double total = calcularTotal();
-            lblTotal.setText(String.format("Total: $%.2f", total));
+            
             JOptionPane.showMessageDialog(this,
                     "Compra confirmada\nTotal: $" + String.format("%.2f", total),
                     "Confirmación", JOptionPane.INFORMATION_MESSAGE);
@@ -533,8 +545,8 @@ public class MenuPrincipal extends JFrame
         // --- PANEL IZQUIERDO CONFIGURACIÓN ---
         JPanel panelConfiguracion = panelRedondeado(BeigeB, 20, null);
         panelConfiguracion.setBorder(BorderFactory.createCompoundBorder(
-                new RoundedBorder(20, VerdeB, 5),
-                new EmptyBorder(15, 15, 15, 15)));
+            new RoundedBorder(20, VerdeB, 5),
+            new EmptyBorder(15, 15, 15, 15)));
 
         Font fontLabel = new Font("Arial", Font.PLAIN, 16);
         Font fontTxt = new Font("Arial", Font.PLAIN, 16);
@@ -563,10 +575,10 @@ public class MenuPrincipal extends JFrame
         txtCosto.setFont(fontTxt);
         txtCosto.setBounds(x, 190, 110, 25);
 
-        JButton GPrecio = new JButton("Guardar Precio");
+        JButton GPrecio = new JButton("Guardar $");
         GPrecio.setOpaque(false);
         GPrecio.setFont(fontLabel);
-        GPrecio.setBounds(160, 190, 150, 30);
+        GPrecio.setBounds(150, 190, 110, 24);
 
         comboCategoria.addActionListener(e ->
         {
@@ -581,8 +593,7 @@ public class MenuPrincipal extends JFrame
                 categoriaSeleccionada.setPrecio(Double.parseDouble(txtCosto.getText()));
                 comboCategoria.repaint();
                 comboCategoria.validate();
-            } catch (NumberFormatException ex)
-            {
+            } catch (NumberFormatException ex){
             }
         });
 
@@ -605,12 +616,63 @@ public class MenuPrincipal extends JFrame
         txtDesc.setWrapStyleWord(true);
         JScrollPane scrollDesc = new JScrollPane(txtDesc);
         scrollDesc.setBounds(x, 310, w, 130);
+        
+        btnGuardarImg = new JButton("Seleccionar Imagen");
+        btnGuardarImg.setBounds(x, 450, 220, 25);
+        panelConfiguracion.add(btnGuardarImg);
+        
+        btnGuardarImg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser selector = new JFileChooser();
+                FileNameExtensionFilter filtro = new FileNameExtensionFilter("Imágenes (jpg, jpeg, png, gif, bmp)", "jpg", "jpeg", "png", "gif", "bmp");
+                selector.setFileFilter(filtro);
+                int resultado = selector.showOpenDialog(MenuPrincipal.this);
+                if (resultado == JFileChooser.APPROVE_OPTION) {
+                    File f = selector.getSelectedFile();
+                        try {
+                            // Carpeta destino dentro del proyecto
+                            Path carpetaDestino = Paths.get("src/Imagenes");
 
+                            // Crea la carpeta si no existe
+                            if (!Files.exists(carpetaDestino)) {
+                                Files.createDirectories(carpetaDestino);
+                            }
+
+                            // Ruta completa del archivo destino
+                            Path archivoDestino = carpetaDestino.resolve(f.getName());
+
+                            // Copia el archivo; REPLACE_EXISTING evita error si ya hay uno igual
+                            Files.copy(f.toPath(), archivoDestino, 
+                                       StandardCopyOption.REPLACE_EXISTING);
+
+                            // Guarda la ruta LOCAL (ya dentro del proyecto)
+                            eventoPrincipoal.rutaImg = archivoDestino.toString();
+
+                            JOptionPane.showMessageDialog(MenuPrincipal.this,
+                                "Imagen guardada:\n" + archivoDestino,
+                                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (IOException ex) {
+                            JOptionPane.showMessageDialog(MenuPrincipal.this,
+                                "Error al copiar la imagen:\n" + ex.getMessage(),
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    f = selector.getSelectedFile();
+                    String name = f.getName().toLowerCase();
+                    if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".gif") || name.endsWith(".bmp")) {
+                        eventoPrincipoal.rutaImg = f.getAbsolutePath(); //Guarda la ruta seleccionada
+                    } else {
+                        JOptionPane.showMessageDialog(MenuPrincipal.this, "Formato no válido. Elija jpg, png, gif o bmp.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+        
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.setFont(fontTxt);
         btnGuardar.setBackground(Color.WHITE);
         btnGuardar.setFocusPainted(false);
-        btnGuardar.setBounds(x + 70, 460, 100, 30);
+        btnGuardar.setBounds(x + 70, 480, 100, 30);
 
         // Ejemplo de cómo obtener la fecha al guardar
         btnGuardar.addActionListener(e ->

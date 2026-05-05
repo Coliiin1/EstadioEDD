@@ -25,7 +25,8 @@ public class Evento {
     public Date Fecha; 
     public String Descripcion;
     Queue<Reporte> pilaReportes;
-
+    public String rutaImg;
+    
     public Evento(String nombreEvento, EstadioClass estadio) {
         this.nombreEvento = nombreEvento;
         this.estadio = estadio;
