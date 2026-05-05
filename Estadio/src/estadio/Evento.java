@@ -24,7 +24,7 @@ public class Evento {
     public Asientos[][] asientos;
     public Date Fecha; 
     public String Descripcion;
-    Queue<Reporte> pilaReportes;
+    public Queue<Reporte> colaReportes;
     public String rutaImg;
     
     public Evento(String nombreEvento, EstadioClass estadio) {
@@ -38,6 +38,8 @@ public class Evento {
         categorias.put("PREFERENCIAL", Categoria.PREFERENCIAL);
         categorias.put("GENERAL", Categoria.GENERAL);
         
+        colaReportes=new LinkedList();
+        
     }
     
     public void ImpEvento(){
@@ -48,5 +50,12 @@ public class Evento {
         for(String key : categorias.keySet()){  
             System.out.println(key+" "+categorias.get(key).getPrecio());
         }
+    }
+    
+    public void mostarReporte(){
+        if(!colaReportes.isEmpty()){
+            return;
+        }
+        colaReportes.peek().mostrar();
     }
 }

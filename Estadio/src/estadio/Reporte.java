@@ -53,11 +53,18 @@ public class Reporte {
     }
     
     private double calcularIngreso(){
+        if (boletos==null){
+            return 0.00;
+        }
         double total=0;
         
         for(Boleto boleto:boletos){
             total+=boleto.getPrecio();
         }
         return total;
+    }
+    
+    public void mostrar(){
+        System.out.println(idVenta);
     }
 }

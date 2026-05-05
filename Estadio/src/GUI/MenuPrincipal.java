@@ -28,8 +28,11 @@ public class MenuPrincipal extends JFrame
     static final Color COLOR_GEN = new Color(125, 124, 121);
     static final Color COLOR_GRATIS = new Color(236, 239, 241);
     static final Color COLOR_INACTIVO = new Color(60, 60, 60);
+    
     public JLabel lblTotal;
+    
     private EstadioClass estadio;
+    
     private JButton[][] botonesAsientos;
     private Categoria categoriaSeleccionada = Categoria.GENERAL;
     private Login login = new Login();
@@ -446,6 +449,8 @@ public class MenuPrincipal extends JFrame
             JOptionPane.showMessageDialog(this,
                     "Compra confirmada\nTotal: $" + String.format("%.2f", total),
                     "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+                    eventoPrincipoal.colaReportes.add(new Reporte(1,null,4,(Categoria)comboCategoria.getSelectedItem()));
+                    eventoPrincipoal.colaReportes.peek().mostrar();
         });
 
         // Actualiza el label de total cada vez que cambia la categoría
