@@ -883,7 +883,7 @@ public class MenuPrincipal extends JFrame
         panelIzquierdo.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
 
         JTextArea textInfo = new JTextArea();
-        textInfo.setFont(new Font("Arial", Font.PLAIN, 16));
+        textInfo.setFont(new Font("Arial", Font.PLAIN, 30));
         textInfo.setForeground(Color.BLACK);
         textInfo.setOpaque(false);
         textInfo.setLineWrap(true);
@@ -891,8 +891,15 @@ public class MenuPrincipal extends JFrame
         textInfo.setEditable(false);
         textInfo.setBorder(new EmptyBorder(15, 15, 15, 15));
         textInfo.setText("""
-                El Estadio Universitario Alberto "Chivo" Córdoba es uno de los recintos \
-                deportivos más representativos de la Universidad Autónoma del Estado de México (UAEMéx)...""");
+                         El Estadio Universitario Alberto \u201cChivo\u201d C\u00f3rdoba es uno de los recintos deportivos m\u00e1s representativos de la Universidad Aut\u00f3noma del Estado de M\u00e9xico (UAEM\u00e9x). Se encuentra ubicado dentro de Ciudad Universitaria, en Toluca, Estado de M\u00e9xico, y es utilizado principalmente para eventos de f\u00fatbol, atletismo y f\u00fatbol americano. Fue inaugurado el 5 de noviembre de 1964 y cuenta con una capacidad aproximada para 32,000 espectadores.
+                         
+                         El estadio recibe su nombre en honor a Alberto \u201cChivo\u201d C\u00f3rdoba, destacado entrenador de f\u00fatbol americano universitario que impuls\u00f3 el desarrollo deportivo de la UAEM\u00e9x. A lo largo de su historia, este recinto ha sido sede de importantes competencias universitarias y partidos profesionales, incluyendo encuentros de los Potros UAEM y del Deportivo Toluca durante la remodelaci\u00f3n del Estadio Nemesio Diez en 2016.
+                         
+                         Uno de los aspectos m\u00e1s llamativos del estadio es su dise\u00f1o arquitect\u00f3nico y art\u00edstico. En la parte de las gradas se encuentra el mural \u201cAratm\u00f3sfera\u201d, creado por el reconocido artista mexiquense Leopoldo Flores entre 1974 y 1976. Esta obra de gran tama\u00f1o convierte al estadio en uno de los recintos deportivos m\u00e1s originales de M\u00e9xico y del mundo, integrando arte y deporte en un mismo espacio.
+                         
+                         El estadio tambi\u00e9n destaca por sus instalaciones deportivas, ya que cuenta con una pista de atletismo certificada, cancha de pasto natural y \u00e1reas destinadas para competencias universitarias y eventos masivos. Gracias a sus remodelaciones y mantenimiento, contin\u00faa siendo uno de los espacios deportivos m\u00e1s importantes del Estado de M\u00e9xico.
+                         
+                         Ubicado sobre Paseo General Vicente Guerrero, dentro de Ciudad Universitaria de la UAEM\u00e9x, el Estadio \u201cChivo\u201d C\u00f3rdoba forma parte de la identidad universitaria y cultural de la instituci\u00f3n, siendo un s\u00edmbolo hist\u00f3rico para estudiantes, deportistas y aficionados al deporte universitario.""");
 
         JScrollPane scroll = new JScrollPane(textInfo);
         scroll.setOpaque(false);
