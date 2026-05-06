@@ -87,42 +87,89 @@ public class MenuPrincipal extends JFrame
         login.Contenedor();
     }
     
-    public JPanel ContenedorReportes(){
-    JPanel panel = new JPanel();
-    panel.setLayout(null);
-    panel.setBackground(BeigeB);
+    public JPanel ContenedorReportes() {
+        // --- Panel imagen lateral (igual que en ContenedorPPrincipal) ---
+        Image imagenEvento = new ImageIcon("src/Imagenes/ChivoCordoba1.jpeg").getImage();
+        JPanel panelImg = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setClip(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 40, 40));
+                g2.drawImage(imagenEvento, 0, 0, getWidth(), getHeight(), this);
+                g2.dispose();
+            }
+        };
+        panelImg.setOpaque(false);
+        panelImg.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
+        panelImg.setPreferredSize(new Dimension(280, 0));
 
-    
-    String[] columnas = {"Fecha", "Categoría", "Asientos", "Precio"};
-    
-    modeloTabla = new DefaultTableModel(columnas, 0); 
-    JTable tablaReporte = new JTable(modeloTabla);
-    tablaReporte.setBackground(BeigeB);
-    
-    JScrollPane scrollTabla = new JScrollPane(tablaReporte);
-    scrollTabla.setBounds(40, 20, 650, 450);
-    panel.add(scrollTabla);
+        // --- Botón Generar Reporte en panel lateral ---
+        JButton btnGenerar = crearBotonRedondeado("Generar reporte", VerdeTarjeta);
+        btnGenerar.setFont(new Font("Arial", Font.BOLD, 18));
+        btnGenerar.setPreferredSize(new Dimension(220, 50));
+        // btnGenerar.addActionListener(e -> generarReporte());
 
-   
-    JLabel lblGanancias = new JLabel("Ganancias Generadas:");
-    lblGanancias.setBounds(170, 490, 300, 40);
-    lblGanancias.setFont(new Font("Arial", Font.BOLD, 24));
-    panel.add(lblGanancias);
+        JPanel bottomLateral = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        bottomLateral.setOpaque(false);
+        bottomLateral.add(btnGenerar);
 
-    txtGanancias = new JTextField("$0.00");
-    txtGanancias.setBounds(500, 490, 180, 40);
-    txtGanancias.setBackground(VerdeB);
-    txtGanancias.setEditable(false);
-    txtGanancias.setHorizontalAlignment(JTextField.CENTER);
-    panel.add(txtGanancias);
+        // --- Panel lateral derecho (igual estilo que panelLateral en ContenedorPPrincipal) ---
+        JPanel panelLateralReporte = panelRedondeado(VerdeB, 40, new BorderLayout());
+        panelLateralReporte.setPreferredSize(new Dimension(320, 0));
+        panelLateralReporte.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
+        panelLateralReporte.add(panelImg, BorderLayout.CENTER);
+        panelLateralReporte.add(bottomLateral, BorderLayout.SOUTH);
 
-    JButton btnGenerar = new JButton("Generar reporte");
-    btnGenerar.setBounds(720, 500, 250, 50);
-    //btnGenerar.addActionListener(e -> limpiarReporte()); 
-    panel.add(btnGenerar);
+        // --- Tabla ---
+        String[] columnas = {"Fecha", "Categoría", "Asientos", "Precio"};
+        modeloTabla = new DefaultTableModel(columnas, 0);
+        JTable tablaReporte = new JTable(modeloTabla);
+        tablaReporte.setBackground(BeigeB);
+        tablaReporte.setRowHeight(55);
+        tablaReporte.getTableHeader().setFont(new Font("Arial", Font.BOLD, 16));
+        tablaReporte.setFont(new Font("Arial", Font.PLAIN, 15));
 
-    return panel;
-}
+        JScrollPane scrollTabla = new JScrollPane(tablaReporte);
+        scrollTabla.setOpaque(false);
+        scrollTabla.getViewport().setBackground(BeigeB);
+        scrollTabla.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        // --- Ganancias al fondo de la tabla ---
+        JLabel lblGanancias = new JLabel("Ganancias Generadas:");
+        lblGanancias.setFont(new Font("Arial", Font.BOLD, 22));
+        lblGanancias.setForeground(new Color(50, 50, 50));
+
+        txtGanancias = new JTextField("$0.00");
+        txtGanancias.setBackground(VerdeB);
+        txtGanancias.setEditable(false);
+        txtGanancias.setHorizontalAlignment(JTextField.CENTER);
+        txtGanancias.setFont(new Font("Arial", Font.BOLD, 18));
+        txtGanancias.setPreferredSize(new Dimension(180, 40));
+        txtGanancias.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
+
+        JPanel panelGanancias = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        panelGanancias.setOpaque(false);
+        panelGanancias.add(lblGanancias);
+        panelGanancias.add(txtGanancias);
+
+        // --- Panel central: tabla + ganancias ---
+        JPanel panelCentro = panelRedondeado(new Color(230, 220, 200), 40, new BorderLayout(0, 5));
+        panelCentro.setBorder(new EmptyBorder(15, 15, 10, 15));
+        panelCentro.add(scrollTabla, BorderLayout.CENTER);
+        panelCentro.add(panelGanancias, BorderLayout.SOUTH);
+
+        // --- Contenedor principal (mismo estilo que en ContenedorPPrincipal) ---
+        JPanel contenedor = panelRedondeado(new Color(230, 220, 200), 45, new BorderLayout(15, 0));
+        contenedor.setBorder(new EmptyBorder(15, 15, 15, 15));
+        contenedor.add(panelCentro, BorderLayout.CENTER);
+        contenedor.add(panelLateralReporte, BorderLayout.EAST);
+
+        JPanel margen = wrapConMargen(contenedor, 0, 15, 15, 15);
+        margen.setBackground(BeigeB);
+        return margen;
+    }
 
        
     
@@ -135,7 +182,7 @@ public class MenuPrincipal extends JFrame
         JPanel panelFondo = panelRedondeado(VerdeTarjeta, 40, new BorderLayout());
         panelFondo.setBorder(new EmptyBorder(10, 15, 10, 15));
 
-        Image imagenLogo = new ImageIcon("src/Imagenes/Logo.jpg").getImage();
+        Image imagenLogo = new ImageIcon("src/Imagenes/LogoUAEMEX.png").getImage();
         JLabel lblLogo = new JLabel()
         {
             @Override
