@@ -28,6 +28,7 @@ public class MenuPrincipal extends JFrame
     static final Color COLOR_GEN = new Color(125, 124, 121);
     static final Color COLOR_GRATIS = new Color(236, 239, 241);
     static final Color COLOR_INACTIVO = new Color(60, 60, 60);
+    long seleccionados;
     
     public JLabel lblTotal;
     
@@ -323,7 +324,7 @@ public class MenuPrincipal extends JFrame
                         if (!asiento.isSeleccionado())
                         {
                             //si se intenta seleccionar
-                            long seleccionados = contarSeleccionados();
+                            seleccionados = contarSeleccionados();
                             if (seleccionados >= MAX_BOLETOS)
                             {
                                 JOptionPane.showMessageDialog(null, "Limite de " + MAX_BOLETOS + " boletos por transaccion", "Limite alcanzado", JOptionPane.INFORMATION_MESSAGE);
@@ -388,33 +389,39 @@ public class MenuPrincipal extends JFrame
 
     // =========================================================
     // Habilita/resalta asientos de la categoría elegida; apaga y deshabilita los demás
-    private void filtrarMatrizPorCategoria(Categoria categoriaActiva, Color colorInactivo)
+    private void filtrarMatrizPorCategoria(Categoria cat, Color colorInactivo)
+{
+    for (int f = 0; f < 10; f++)
     {
-        for (int f = 0; f < 10; f++)
+        for (int c = 0; c < 30; c++)
         {
-            for (int c = 0; c < 30; c++)
+            Asientos a = estadio.getAsiento(f, c);
+            JButton btn = botonesAsientos[f][c];
+
+            // Si está ocupado, siempre gris y deshabilitado sin importar el filtro
+            if (a.getEstado() == EstadoAsientos.OCUPADO)
             {
-                Asientos asiento = estadio.getAsiento(f, c);
-                JButton btn = botonesAsientos[f][c];
-                //solo era el !
-                if (asiento.getCategoria() == categoriaActiva && asiento.isDisponible())
-                {
-                    // Asiento disponible de la categoría seleccionada: activo con su color real
-                    btn.setEnabled(true);
-                    actualizarColorBoton(btn, categoriaActiva);
-                    btn.setOpaque(true);
-                    btn.setBorder(null);
-                    
-                } else
-                {
-                    // Asiento de otra categoría u ocupado: apagado e ininteractuable
-                    btn.setEnabled(false);
-                    btn.setBackground(colorInactivo);
-                    btn.setBorder(null);
-                }
+                btn.setBackground(colorInactivo);
+                btn.setBorder(null);
+                btn.setEnabled(false);
+            }
+            else if (a.getCategoria() == cat)
+            {
+                // Pertenece a la categoría filtrada: habilitar y colorear normal
+                actualizarColorBoton(btn, a.getCategoria());
+                btn.setBorder(null);
+                btn.setEnabled(true);
+            }
+            else
+            {
+                // Otra categoría: gris y deshabilitado
+                btn.setBackground(colorInactivo);
+                btn.setBorder(null);
+                btn.setEnabled(false);
             }
         }
     }
+}
 
     // CONTENEDOR COMPRAR
     // Panel lateral: leyenda de categorías + total + botón confirmar
@@ -467,19 +474,9 @@ public class MenuPrincipal extends JFrame
         lblTotal.setFont(fontLabel);
         lblTotal.setForeground(Color.WHITE);
         lblTotal.setHorizontalAlignment(SwingConstants.CENTER);
-
         JButton btnConfirmar = crearBotonRedondeado("Confirmar compra", VerdeTarjeta);
         btnConfirmar.setFont(new Font("Arial", Font.BOLD, 14));
         btnConfirmar.setPreferredSize(new Dimension(210, 45));
-        btnConfirmar.addActionListener(e ->
-        {
-            
-            JOptionPane.showMessageDialog(this,
-                    "Compra confirmada\nTotal: $" + String.format("%.2f", total),
-                    "Confirmación", JOptionPane.INFORMATION_MESSAGE);
-                    eventoPrincipoal.colaReportes.add(new Reporte(1,null,4,(Categoria)comboCategoria.getSelectedItem()));
-                    eventoPrincipoal.colaReportes.peek().mostrar();
-        });
 
         // Actualiza el label de total cada vez que cambia la categoría
         comboCategoria.addActionListener(e
@@ -507,7 +504,52 @@ public class MenuPrincipal extends JFrame
         contenedor.setBorder(new EmptyBorder(15, 15, 15, 15));
         contenedor.add(panelLateralCompra, BorderLayout.WEST);
         contenedor.add(matrizAsientos, BorderLayout.CENTER);
+        
+        
+        
+        btnConfirmar.addActionListener(e ->
+        {
+            // Verificar que haya al menos un asiento seleccionado
+            if (contarSeleccionados() == 0)
+            {
+                JOptionPane.showMessageDialog(this,
+                    "Selecciona al menos un asiento antes de confirmar.",
+                    "Sin selección", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
+            JOptionPane.showMessageDialog(this,
+                "Compra confirmada\nTotal: $" + String.format("%.2f", total),
+                "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+
+            // Marcar los asientos seleccionados como OCUPADO y repintar sus botones
+            for (int f = 0; f < 10; f++)
+            {
+                for (int c = 0; c < 30; c++)
+                {
+                    Asientos a = estadio.getAsiento(f, c);
+                    if (a.isSeleccionado())
+                    {
+                        a.setSeleccionado(false);
+                        a.setEstado(EstadoAsientos.OCUPADO); // <-- marcar como no disponible
+                        botonesAsientos[f][c].setBackground(new Color(60, 60, 60));
+                        botonesAsientos[f][c].setBorder(null);
+                        botonesAsientos[f][c].setEnabled(false); // <-- deshabilitar el botón
+                    }
+                }
+            }
+
+            // Registrar reporte
+            eventoPrincipoal.colaReportes.add(
+                new Reporte(1, null, 4, (Categoria) comboCategoria.getSelectedItem()));
+            eventoPrincipoal.colaReportes.peek().mostrar();
+
+            // Resetear totales
+            seleccionados = 0;
+            total = 0;
+            lblTotal.setText("Total: $0.00");
+        });
+        
         JPanel margen = wrapConMargen(contenedor, 0, 15, 15, 15);
         margen.setBackground(BeigeB);
         return margen;
@@ -948,15 +990,5 @@ public class MenuPrincipal extends JFrame
         {
             return new Insets(10, 10, 10, 10);
         }
-    }
-
-    public static void main(String[] args)
-    {
-        SwingUtilities.invokeLater(() ->
-        {
-            MenuPrincipal ventana = new MenuPrincipal();
-            ventana.ContenedorPrincipal();
-            ventana.setVisible(true);
-        });
     }
 }
