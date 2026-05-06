@@ -44,6 +44,7 @@ public class MenuPrincipal extends JFrame
     private boolean Admin = false;
     private JPanel margenCentral, navPanel, panelBotones;
     private JButton btnGuardarImg;
+    private JButton btnGenerarReportes;
     
     
     public Evento eventoPrincipal;
@@ -56,7 +57,7 @@ public class MenuPrincipal extends JFrame
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setIconImage(getToolkit().getImage(getClass().getResource("/Imagenes/Logo.jpg")));
         this.estadio = new EstadioClass();
-        this.eventoPrincipal = new Evento("");
+        this.eventoPrincipal = new Evento("Evento");
         this.botonesAsientos = new JButton[10][30];
         addComponentListener(new ComponentAdapter()
         {
@@ -80,7 +81,13 @@ public class MenuPrincipal extends JFrame
         mostrarContenido(ContenedorPPrincipal());
         login.Contenedor();
     }
-
+    
+    public JPanel ContenedorReportes(){
+        JPanel panel = new JPanel();
+        return panel;
+    }
+    
+    
     // =========================================================
     // NAVBAR DINÁMICA
     // =========================================================
@@ -115,6 +122,7 @@ public class MenuPrincipal extends JFrame
         izquierda.add(lblNombre);
 
         btnEventoPrincipal = crearBotonNav("Evento Principal");
+        btnGenerarReportes = crearBotonNav("Generar Reportes");
         btnInfoGeneral = crearBotonNav("Informacion General");
         btnIngresa = crearBotonNav("Ingresa");
         btnModificar = crearBotonNav("Modificar Evento");
@@ -125,8 +133,7 @@ public class MenuPrincipal extends JFrame
             panelBotones = new JPanel(new GridLayout(1, 4, 15, 0));
             panelBotones.setOpaque(false);
             panelBotones.setPreferredSize(new Dimension(850, 45));
-            panelBotones.add(btnEventoPrincipal);
-            panelBotones.add(btnInfoGeneral);
+            panelBotones.add(btnGenerarReportes);
             panelBotones.add(btnModificar);
             panelBotones.add(btnSalir);
         } else
@@ -164,6 +171,7 @@ public class MenuPrincipal extends JFrame
                 actualizarNavbar();
                 mostrarContenido(ContenedorPPrincipal());
             });
+            btnGenerarReportes.addActionListener(e -> mostrarContenido(ContenedorReportes()));
         } else
         {
             btnIngresa.addActionListener(e ->
@@ -523,20 +531,21 @@ public class MenuPrincipal extends JFrame
             JOptionPane.showMessageDialog(this,
                 "Compra confirmada\nTotal: $" + String.format("%.2f", total),
                 "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+                mostrarContenido(ContenedorPPrincipal());
 
             // Marcar los asientos seleccionados como OCUPADO y repintar sus botones
             for (int f = 0; f < 10; f++)
             {
                 for (int c = 0; c < 30; c++)
                 {
-                    Asientos a = eventoPrincipal.estadio.getAsiento(f, c);
-                    if (a.isSeleccionado())
+                    if (eventoPrincipal.estadio.getMatriz()[f][c].isSeleccionado())
                     {
-                        a.setSeleccionado(false);
-                        a.setEstado(EstadoAsientos.OCUPADO); // <-- marcar como no disponible
+                        eventoPrincipal.estadio.getMatriz()[f][c].setSeleccionado(false);
+                        eventoPrincipal.estadio.getMatriz()[f][c].setEstado(EstadoAsientos.OCUPADO); // <-- marcar como no disponible
                         botonesAsientos[f][c].setBackground(new Color(60, 60, 60));
                         botonesAsientos[f][c].setBorder(null);
                         botonesAsientos[f][c].setEnabled(false); // <-- deshabilitar el botón
+                        
                     }
                 }
             }
@@ -632,7 +641,7 @@ public class MenuPrincipal extends JFrame
         JLabel lblNombre = new JLabel("Nombre del Evento");
         lblNombre.setFont(fontLabel);
         lblNombre.setBounds(x, 25, w, 20);
-        JTextField txtNombre = new JTextField();
+        JTextField txtNombre = new JTextField(eventoPrincipal.nombreEvento);
         txtNombre.setFont(fontTxt);
         txtNombre.setBounds(x, 50, w, 25);
 
@@ -681,6 +690,7 @@ public class MenuPrincipal extends JFrame
 
         JDateChooser dateChooser = new JDateChooser();
         dateChooser.setFont(fontTxt);
+        dateChooser.setDate(eventoPrincipal.Fecha);
         dateChooser.setBounds(x, 255, w, 25);
         dateChooser.setDateFormatString("dd/MM/yyyy");
 
@@ -691,6 +701,7 @@ public class MenuPrincipal extends JFrame
         txtDesc.setFont(fontTxt);
         txtDesc.setLineWrap(true);
         txtDesc.setWrapStyleWord(true);
+        txtDesc.setText(eventoPrincipal.Descripcion);
         JScrollPane scrollDesc = new JScrollPane(txtDesc);
         scrollDesc.setBounds(x, 310, w, 130);
         
