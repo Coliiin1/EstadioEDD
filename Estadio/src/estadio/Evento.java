@@ -26,9 +26,9 @@ public class Evento {
     public Queue<Reporte> colaReportes;
     public String rutaImg;
     
-    public Evento(String nombreEvento, EstadioClass estadio) {
+    public Evento(String nombreEvento) {
         this.nombreEvento = nombreEvento;
-        this.estadio = estadio;
+        estadio = new EstadioClass();
         rutaImg = "";
         boletosVip=new LinkedList();
         boletosPreferencial=new LinkedList();

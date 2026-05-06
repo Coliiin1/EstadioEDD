@@ -46,7 +46,7 @@ public class MenuPrincipal extends JFrame
     private JButton btnGuardarImg;
     
     
-    public Evento eventoPrincipoal;
+    public Evento eventoPrincipal;
 
     public MenuPrincipal()
     {
@@ -56,7 +56,7 @@ public class MenuPrincipal extends JFrame
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setIconImage(getToolkit().getImage(getClass().getResource("/Imagenes/Logo.jpg")));
         this.estadio = new EstadioClass();
-        this.eventoPrincipoal = new Evento("", estadio);
+        this.eventoPrincipal = new Evento("");
         this.botonesAsientos = new JButton[10][30];
         addComponentListener(new ComponentAdapter()
         {
@@ -192,7 +192,7 @@ public class MenuPrincipal extends JFrame
     // =========================================================
     public JPanel ContenedorPPrincipal()
     {
-        Image imagenEvento = new ImageIcon(eventoPrincipoal.rutaImg).getImage();
+        Image imagenEvento = new ImageIcon(eventoPrincipal.rutaImg).getImage();
         panelImagen = new JPanel()
         {
             @Override
@@ -214,7 +214,7 @@ public class MenuPrincipal extends JFrame
         panelLateral.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
         
         // -- Titulo del evento en un Label
-        JLabel labelTitulo = new JLabel(eventoPrincipoal.nombreEvento); // ajusta el campo según tu objeto
+        JLabel labelTitulo = new JLabel(eventoPrincipal.nombreEvento); // ajusta el campo según tu objeto
         labelTitulo.setFont(new Font("Arial", Font.BOLD, 30));
         labelTitulo.setForeground(BeigeB);
         labelTitulo.setHorizontalAlignment(SwingConstants.CENTER);
@@ -226,7 +226,7 @@ public class MenuPrincipal extends JFrame
         DescEvento.setWrapStyleWord(true);
         DescEvento.setEditable(false);
         DescEvento.setOpaque(false);
-        DescEvento.setText(eventoPrincipoal.Descripcion);
+        DescEvento.setText(eventoPrincipal.Descripcion);
         DescEvento.setFont(new Font("Arial", Font.PLAIN, 28));
         DescEvento.setForeground(BeigeB);
 
@@ -294,7 +294,7 @@ public class MenuPrincipal extends JFrame
         {
             for (int c = 0; c < 30; c++)
             {
-                Asientos asiento = estadio.getAsiento(f, c);
+                Asientos asiento = eventoPrincipal.estadio.getAsiento(f, c);
                 JButton btn = new JButton();
                 btn.setPreferredSize(new Dimension(25, 25));
                 btn.setFocusPainted(false);
@@ -309,7 +309,7 @@ public class MenuPrincipal extends JFrame
                     //Esto solo es para que el adminasigne la categoria al asiento inmediatamente 
                     btn.addActionListener(e ->
                     {
-                        estadio.asignarCategoria(fila, col, categoriaSeleccionada);
+                        eventoPrincipal.estadio.asignarCategoria(fila, col, categoriaSeleccionada);
                         actualizarColorBoton(btn, categoriaSeleccionada);
                     });
                 } else
@@ -368,7 +368,7 @@ public class MenuPrincipal extends JFrame
                 {
                     for (int c2 = 0; c2 < 30; c2++)
                     {
-                        Asientos a = estadio.getAsiento(f2, c2);
+                        Asientos a = eventoPrincipal.estadio.getAsiento(f2, c2);
                         if (a.isSeleccionado())
                         {
                             a.setSeleccionado(false);
@@ -395,7 +395,7 @@ public class MenuPrincipal extends JFrame
     {
         for (int c = 0; c < 30; c++)
         {
-            Asientos a = estadio.getAsiento(f, c);
+            Asientos a = eventoPrincipal.estadio.getAsiento(f, c);
             JButton btn = botonesAsientos[f][c];
 
             // Si está ocupado, siempre gris y deshabilitado sin importar el filtro
@@ -509,8 +509,8 @@ public class MenuPrincipal extends JFrame
         
         btnConfirmar.addActionListener(e ->
         {
-            eventoPrincipoal.actualizarListas();
-            eventoPrincipoal.imprimirlistas();
+            eventoPrincipal.actualizarListas();
+            eventoPrincipal.imprimirlistas();
             // Verificar que haya al menos un asiento seleccionado
             if (contarSeleccionados() == 0)
             {
@@ -529,7 +529,7 @@ public class MenuPrincipal extends JFrame
             {
                 for (int c = 0; c < 30; c++)
                 {
-                    Asientos a = estadio.getAsiento(f, c);
+                    Asientos a = eventoPrincipal.estadio.getAsiento(f, c);
                     if (a.isSeleccionado())
                     {
                         a.setSeleccionado(false);
@@ -542,9 +542,9 @@ public class MenuPrincipal extends JFrame
             }
 
             // Registrar reporte
-            eventoPrincipoal.colaReportes.add(
+            eventoPrincipal.colaReportes.add(
                 new Reporte(1, null, 4, (Categoria) comboCategoria.getSelectedItem()));
-            eventoPrincipoal.colaReportes.peek().mostrar();
+            eventoPrincipal.colaReportes.peek().mostrar();
 
             // Resetear totales
             seleccionados = 0;
@@ -582,7 +582,7 @@ public class MenuPrincipal extends JFrame
         {
             for (int c = 0; c < 30; c++)
             {
-                Asientos a = estadio.getAsiento(f, c);
+                Asientos a = eventoPrincipal.estadio.getAsiento(f, c);
                 if (a.isSeleccionado())
                 {
                     total += a.getCategoria().getPrecio();
@@ -600,7 +600,7 @@ public class MenuPrincipal extends JFrame
         {
             for (int c = 0; c < 30; c++)
             {
-                if (estadio.getAsiento(f, c).isSeleccionado())
+                if (eventoPrincipal.estadio.getAsiento(f, c).isSeleccionado())
                 {
                     count++;
                 }
@@ -724,7 +724,7 @@ public class MenuPrincipal extends JFrame
                                        StandardCopyOption.REPLACE_EXISTING);
 
                             // Guarda la ruta LOCAL (ya dentro del proyecto)
-                            eventoPrincipoal.rutaImg = archivoDestino.toString();
+                            eventoPrincipal.rutaImg = archivoDestino.toString();
 
                             JOptionPane.showMessageDialog(MenuPrincipal.this,
                                 "Imagen guardada:\n" + archivoDestino,
@@ -737,7 +737,7 @@ public class MenuPrincipal extends JFrame
                     f = selector.getSelectedFile();
                     String name = f.getName().toLowerCase();
                     if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".gif") || name.endsWith(".bmp")) {
-                        eventoPrincipoal.rutaImg = f.getAbsolutePath(); //Guarda la ruta seleccionada
+                        eventoPrincipal.rutaImg = f.getAbsolutePath(); //Guarda la ruta seleccionada
                     } else {
                         JOptionPane.showMessageDialog(MenuPrincipal.this, "Formato no válido. Elija jpg, png, gif o bmp.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -757,16 +757,16 @@ public class MenuPrincipal extends JFrame
             String nombre = txtNombre.getText().trim();
             String descripcion = txtDesc.getText().trim();
 
-            if (fechaSeleccionada == null || nombre.isEmpty() || descripcion.isEmpty() || eventoPrincipoal.rutaImg.equals("")) {
+            if (fechaSeleccionada == null || nombre.isEmpty() || descripcion.isEmpty() || eventoPrincipal.rutaImg.equals("")) {
                 JOptionPane.showMessageDialog(null, "Llena todos los campos");
                 return; //detiene la ejecución, no guarda nada
             }
 
             try {
-                eventoPrincipoal.Fecha = fechaSeleccionada;
-                eventoPrincipoal.nombreEvento = nombre.toUpperCase();
-                eventoPrincipoal.Descripcion = descripcion;
-                eventoPrincipoal.ImpEvento();
+                eventoPrincipal.Fecha = fechaSeleccionada;
+                eventoPrincipal.nombreEvento = nombre.toUpperCase();
+                eventoPrincipal.Descripcion = descripcion;
+                eventoPrincipal.ImpEvento();
                 JOptionPane.showMessageDialog(null, "Evento Guardado Correctamente");
 
             } catch (Exception ex) {
