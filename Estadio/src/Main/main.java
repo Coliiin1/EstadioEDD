@@ -3,13 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Main;
-
+import GUI.*;
 /**
  *
  * @author fabri
  */
-public class main {
+public class Main {
     public static void main(String[] args) {
-        
+        MenuPrincipal mainPrincipal = new MenuPrincipal();
+        mainPrincipal.ContenedorPrincipal();
+        mainPrincipal.setVisible(true);
     }
 }
