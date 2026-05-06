@@ -509,6 +509,8 @@ public class MenuPrincipal extends JFrame
         
         btnConfirmar.addActionListener(e ->
         {
+            eventoPrincipoal.actualizarListas();
+            eventoPrincipoal.imprimirlistas();
             // Verificar que haya al menos un asiento seleccionado
             if (contarSeleccionados() == 0)
             {
@@ -517,7 +519,7 @@ public class MenuPrincipal extends JFrame
                     "Sin selección", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-
+            
             JOptionPane.showMessageDialog(this,
                 "Compra confirmada\nTotal: $" + String.format("%.2f", total),
                 "Confirmación", JOptionPane.INFORMATION_MESSAGE);

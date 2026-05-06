@@ -13,14 +13,14 @@ public class Boleto
 
     private String idBoleto;
     private Categoria categoria;
-    private int numeroAsiento;
-    private boolean estado;
+    private Asientos asiento;
+    private EstadoAsientos estado;
 
-    public Boleto(String idBoleto, Categoria categoria, int numeroAsiento, boolean estado)
+    public Boleto(String idBoleto, Asientos asiento, EstadoAsientos estado)
     {
         this.idBoleto = idBoleto;
-        this.categoria = categoria;
-        this.numeroAsiento = numeroAsiento;
+        this.asiento=asiento;
+        this.categoria=this.asiento.getCategoria();
         this.estado = estado;
     }
 
@@ -62,19 +62,19 @@ public class Boleto
     }
 
     /**
-     * @return the numeroAsiento
+     * @return the asiento
      */
-    public int getNumeroAsiento()
+    public Asientos getNumeroAsiento()
     {
-        return numeroAsiento;
+        return asiento;
     }
 
     /**
-     * @param numeroAsiento the numeroAsiento to set
+     * @param numeroAsiento the asiento to set
      */
-    public void setNumeroAsiento(int numeroAsiento)
+    public void setNumeroAsiento(Asientos numeroAsiento)
     {
-        this.numeroAsiento = numeroAsiento;
+        this.asiento = numeroAsiento;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class Boleto
     {
         return "ID: " + idBoleto
                 + " Categoria: " + categoria.name()
-                + " Asiento: " + numeroAsiento
+                + " Asiento: " + asiento
                 + " Precio: $" + categoria.getPrecio();
     }
 }

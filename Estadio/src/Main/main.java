@@ -8,7 +8,7 @@ import GUI.*;
  *
  * @author fabri
  */
-public class Main {
+public class main {
     public static void main(String[] args) {
         MenuPrincipal mainPrincipal = new MenuPrincipal();
         mainPrincipal.ContenedorPrincipal();
