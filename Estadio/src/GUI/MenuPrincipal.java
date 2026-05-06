@@ -16,6 +16,7 @@ import java.nio.file.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 public class MenuPrincipal extends JFrame
 {
@@ -48,6 +49,10 @@ public class MenuPrincipal extends JFrame
     
     
     public Evento eventoPrincipal;
+    
+    private DefaultTableModel modeloTabla;
+    private double totalGanancias = 0.0;
+    private JTextField txtGanancias;
 
     public MenuPrincipal()
     {
@@ -83,9 +88,43 @@ public class MenuPrincipal extends JFrame
     }
     
     public JPanel ContenedorReportes(){
-        JPanel panel = new JPanel();
-        return panel;
-    }
+    JPanel panel = new JPanel();
+    panel.setLayout(null);
+    panel.setBackground(BeigeB);
+
+    
+    String[] columnas = {"Fecha", "Categoría", "Asientos", "Precio"};
+    
+    modeloTabla = new DefaultTableModel(columnas, 0); 
+    JTable tablaReporte = new JTable(modeloTabla);
+    tablaReporte.setBackground(BeigeB);
+    
+    JScrollPane scrollTabla = new JScrollPane(tablaReporte);
+    scrollTabla.setBounds(40, 20, 650, 450);
+    panel.add(scrollTabla);
+
+   
+    JLabel lblGanancias = new JLabel("Ganancias Generadas:");
+    lblGanancias.setBounds(170, 490, 300, 40);
+    lblGanancias.setFont(new Font("Arial", Font.BOLD, 24));
+    panel.add(lblGanancias);
+
+    txtGanancias = new JTextField("$0.00");
+    txtGanancias.setBounds(500, 490, 180, 40);
+    txtGanancias.setBackground(VerdeB);
+    txtGanancias.setEditable(false);
+    txtGanancias.setHorizontalAlignment(JTextField.CENTER);
+    panel.add(txtGanancias);
+
+    JButton btnGenerar = new JButton("Generar reporte");
+    btnGenerar.setBounds(720, 500, 250, 50);
+    //btnGenerar.addActionListener(e -> limpiarReporte()); 
+    panel.add(btnGenerar);
+
+    return panel;
+}
+
+       
     
     
     // =========================================================
