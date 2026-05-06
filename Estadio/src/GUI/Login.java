@@ -28,6 +28,7 @@ public class Login extends JFrame{
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
+        setIconImage(getToolkit().getImage(getClass().getResource("/Imagenes/Logo.png")));
         setLayout(new GridLayout(1, 2)); // dos paneles lado a lado
     }
     

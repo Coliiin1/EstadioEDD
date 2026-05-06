@@ -60,7 +60,7 @@ public class MenuPrincipal extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1100, 700));
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setIconImage(getToolkit().getImage(getClass().getResource("/Imagenes/Logo.jpg")));
+        setIconImage(getToolkit().getImage(getClass().getResource("/Imagenes/Logo.png")));
         this.estadio = new EstadioClass();
         this.eventoPrincipal = new Evento("Evento");
         this.botonesAsientos = new JButton[10][30];
@@ -89,7 +89,7 @@ public class MenuPrincipal extends JFrame
     
     public JPanel ContenedorReportes() {
         // --- Panel imagen lateral (igual que en ContenedorPPrincipal) ---
-        Image imagenEvento = new ImageIcon("src/Imagenes/ChivoCordoba1.jpeg").getImage();
+        Image imagenEvento = new ImageIcon("src/Imagenes/Icono.png").getImage();
         JPanel panelImg = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -182,7 +182,7 @@ public class MenuPrincipal extends JFrame
         JPanel panelFondo = panelRedondeado(VerdeTarjeta, 40, new BorderLayout());
         panelFondo.setBorder(new EmptyBorder(10, 15, 10, 15));
 
-        Image imagenLogo = new ImageIcon("src/Imagenes/LogoUAEMEX.png").getImage();
+        Image imagenLogo = new ImageIcon("src/Imagenes/Logo.png").getImage();
         JLabel lblLogo = new JLabel()
         {
             @Override
