@@ -66,6 +66,9 @@ public class Evento {
         Boleto temp;
         for (int i = 0; i < estadio.getFILAS(); i++) {
             for (int j = 0; j < estadio.getCOLUMNAS(); j++) {
+                if (!estadio.getMatriz()[i][j].isDisponible()) {
+                    continue;
+                }
                 switch (estadio.getMatriz()[i][j].getCategoria()) { //categorira
                     case VIP: boletosVip.add(temp=new Boleto(estadio.getMatriz()[i][j].getId(), estadio.getMatriz()[i][j], estadio.getMatriz()[i][j].getEstado()));
                         break;
