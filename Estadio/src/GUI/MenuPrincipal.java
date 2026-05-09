@@ -403,6 +403,12 @@ public class MenuPrincipal extends JFrame
                  panelMatriz.add(btn);
                  continue;
                 }
+                if (eventoPrincipal.estadio.getAsiento(f, c).getEstado() == EstadoAsientos.OCUPADO)
+                {
+                    btn.setBackground(COLOR_INACTIVO);
+                    btn.setBorder(null);
+                    btn.setEnabled(false);
+                }
                 actualizarColorBoton(btn, asiento.getCategoria());
                 
 
@@ -458,7 +464,7 @@ public class MenuPrincipal extends JFrame
                 panelMatriz.add(btn);
             }
         }
-
+        filtrarMatrizPorCategoria((Categoria) comboCategoria.getSelectedItem(), COLOR_INACTIVO);//esto deberia funcionar para desactivar los asientos ya vendidos
         // Filtrado por categoría: solo en modo compra
         if (modoCompra && comboCategoria != null)
         {
