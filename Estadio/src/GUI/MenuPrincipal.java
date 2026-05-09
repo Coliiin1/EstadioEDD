@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
@@ -39,6 +40,7 @@ public class MenuPrincipal extends JFrame
     private Categoria categoriaSeleccionada = Categoria.GENERAL;
     private Login login = new Login();
     private double total = 0;
+    private LinkedList<Boleto> boletosComprados; 
     public JButton btnEventoPrincipal, btnInfoGeneral, btnIngresa,
             btnComprar, btnSalir, btnModificar;
     public JPanel panelImagen, panelLateral;
@@ -62,8 +64,9 @@ public class MenuPrincipal extends JFrame
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setIconImage(getToolkit().getImage(getClass().getResource("/Imagenes/Logo.png")));
         this.estadio = new EstadioClass();
+        this.boletosComprados=new LinkedList<>();
         this.eventoPrincipal = new Evento("Evento");
-        this.botonesAsientos = new JButton[10][30];
+        this.botonesAsientos = new JButton[eventoPrincipal.estadio.getFILAS()][eventoPrincipal.estadio.getCOLUMNAS()];
         addComponentListener(new ComponentAdapter()
         {
             @Override
@@ -369,31 +372,39 @@ public class MenuPrincipal extends JFrame
         final Color COLOR_INACTIVO = new Color(60, 60, 60);
         Font fontLabel = new Font("Arial", Font.PLAIN, 16);
 
-        JPanel panelFilas = new JPanel(new GridLayout(10, 1, 0, 3));
+        JPanel panelFilas = new JPanel(new GridLayout(eventoPrincipal.estadio.getFILAS(), 1, 0, 3));
         panelFilas.setOpaque(false);
         panelFilas.setBorder(new EmptyBorder(6, 0, 6, 8));
-        for (int f = 9; f >= 0; f--)
+        for (int f = eventoPrincipal.estadio.getFILAS()-1; f >= 0; f--)
         {
             JLabel lbl = new JLabel("F" + (f + 1), SwingConstants.RIGHT);
             lbl.setFont(fontLabel);
             panelFilas.add(lbl);
         }
 
-        JPanel panelMatriz = panelRedondeado(VerdeB, 20, new GridLayout(10, 30, 3, 3));
+        JPanel panelMatriz = panelRedondeado(VerdeB, 20, new GridLayout(eventoPrincipal.estadio.getFILAS(), eventoPrincipal.estadio.getCOLUMNAS(), 3, 3));
         panelMatriz.setBorder(BorderFactory.createCompoundBorder(
                 new RoundedBorder(20, VerdeTarjeta, 5),
                 new EmptyBorder(6, 6, 6, 6)));
 
-        for (int f = 9; f >= 0; f--)
+        for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++)
         {
-            for (int c = 0; c < 30; c++)
+            for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++)
             {
+                
                 Asientos asiento = eventoPrincipal.estadio.getAsiento(f, c);
                 JButton btn = new JButton();
                 btn.setPreferredSize(new Dimension(25, 25));
                 btn.setFocusPainted(false);
                 btn.setMargin(new Insets(0, 0, 0, 0));
+                if(eventoPrincipal.estadio.getAsiento(f, c)==null){
+                 btn.setVisible(false);
+                 botonesAsientos[f][c] = btn;
+                 panelMatriz.add(btn);
+                 continue;
+                }
                 actualizarColorBoton(btn, asiento.getCategoria());
+                
 
                 final int fila = f, col = c;
 
@@ -458,11 +469,14 @@ public class MenuPrincipal extends JFrame
             {
                 Categoria nueva = (Categoria) comboCategoria.getSelectedItem();
                 // Limpia selecciones previas antes de cambiar de categoría
-                for (int f2 = 0; f2 < 10; f2++)
+                for (int f2 = 0; f2 < eventoPrincipal.estadio.getFILAS(); f2++)
                 {
-                    for (int c2 = 0; c2 < 30; c2++)
+                    for (int c2 = 0; c2 <eventoPrincipal.estadio.getCOLUMNAS(); c2++)
                     {
                         Asientos a = eventoPrincipal.estadio.getAsiento(f2, c2);
+                        if (a==null) {
+                            continue;
+                        }
                         if (a.isSeleccionado())
                         {
                             a.setSeleccionado(false);
@@ -474,7 +488,7 @@ public class MenuPrincipal extends JFrame
                 filtrarMatrizPorCategoria(nueva, COLOR_INACTIVO);
             });
         }
-        JPanel contenedorMatriz = new JPanel(new BorderLayout(0, 0));
+        JPanel contenedorMatriz = new JPanel(new BorderLayout());
         contenedorMatriz.setOpaque(false);
         contenedorMatriz.add(panelFilas, BorderLayout.WEST);
         contenedorMatriz.add(panelMatriz, BorderLayout.CENTER);
@@ -485,11 +499,14 @@ public class MenuPrincipal extends JFrame
     // Habilita/resalta asientos de la categoría elegida; apaga y deshabilita los demás
     private void filtrarMatrizPorCategoria(Categoria cat, Color colorInactivo)
 {
-    for (int f = 0; f < 10; f++)
+    for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++)
     {
-        for (int c = 0; c < 30; c++)
+        for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++)
         {
             Asientos a = eventoPrincipal.estadio.getAsiento(f, c);
+            if(a==null){
+                continue;
+            }
             JButton btn = botonesAsientos[f][c];
 
             // Si está ocupado, siempre gris y deshabilitado sin importar el filtro
@@ -620,30 +637,35 @@ public class MenuPrincipal extends JFrame
                 mostrarContenido(ContenedorPPrincipal());
 
             // Marcar los asientos seleccionados como OCUPADO y repintar sus botones
-            for (int f = 0; f < 10; f++)
+            for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++)
             {
-                for (int c = 0; c < 30; c++)
+                for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++)
                 {
+                    if (eventoPrincipal.estadio.getMatriz()[f][c]==null) {
+                        continue;
+                    }
                     if (eventoPrincipal.estadio.getMatriz()[f][c].isSeleccionado())
                     {
+                        
                         eventoPrincipal.estadio.getMatriz()[f][c].setSeleccionado(false);
                         eventoPrincipal.estadio.getMatriz()[f][c].setEstado(EstadoAsientos.OCUPADO); // <-- marcar como no disponible
                         botonesAsientos[f][c].setBackground(new Color(60, 60, 60));
                         botonesAsientos[f][c].setBorder(null);
                         botonesAsientos[f][c].setEnabled(false); // <-- deshabilitar el botón
-                        
+                        boletosComprados.add(new Boleto(eventoPrincipal.estadio.getMatriz()[f][c].getId(), eventoPrincipal.estadio.getMatriz()[f][c], eventoPrincipal.estadio.getMatriz()[f][c].getEstado()));
                     }
                 }
             }
 
             // Registrar reporte
             eventoPrincipal.colaReportes.add(
-                new Reporte(1, null, 4, (Categoria) comboCategoria.getSelectedItem()));
+                new Reporte(1, boletosComprados, (int)seleccionados, (Categoria) comboCategoria.getSelectedItem()));
             eventoPrincipal.colaReportes.peek().mostrar();
 
             // Resetear totales
             seleccionados = 0;
             total = 0;
+            boletosComprados.clear();
             lblTotal.setText("Total: $0.00");
         });
         
@@ -673,11 +695,14 @@ public class MenuPrincipal extends JFrame
     private double calcularTotal()
     {
         double total = 0;
-        for (int f = 0; f < 10; f++)
+        for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++)
         {
-            for (int c = 0; c < 30; c++)
+            for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++)
             {
                 Asientos a = eventoPrincipal.estadio.getAsiento(f, c);
+                if(a==null){
+                    continue;
+                }
                 if (a.isSeleccionado())
                 {
                     total += a.getCategoria().getPrecio();
@@ -691,10 +716,13 @@ public class MenuPrincipal extends JFrame
     private long contarSeleccionados()
     {
         long count = 0;
-        for (int f = 0; f < 10; f++)
+        for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++)
         {
-            for (int c = 0; c < 30; c++)
+            for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++)
             {
+                if (eventoPrincipal.estadio.getAsiento(f, c)==null) {
+                    continue;
+                }
                 if (eventoPrincipal.estadio.getAsiento(f, c).isSeleccionado())
                 {
                     count++;

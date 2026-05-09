@@ -83,6 +83,8 @@ public class Boleto
         return "ID: " + idBoleto
                 + " Categoria: " + categoria.name()
                 + " Asiento: " + asiento
-                + " Precio: $" + categoria.getPrecio();
+                + " Precio: $" + categoria.getPrecio()
+                + " Estado: " + estado;
+        
     }
 }

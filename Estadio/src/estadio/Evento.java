@@ -20,6 +20,7 @@ public class Evento {
     public LinkedList<Boleto> boletosVip; 
     public LinkedList<Boleto> boletosPreferencial; 
     public LinkedList<Boleto> boletosGeneral; 
+
     public HashMap<String,Categoria> categorias;
     public Date Fecha; 
     public String Descripcion;
@@ -66,7 +67,7 @@ public class Evento {
         Boleto temp;
         for (int i = 0; i < estadio.getFILAS(); i++) {
             for (int j = 0; j < estadio.getCOLUMNAS(); j++) {
-                if (!estadio.getMatriz()[i][j].isDisponible()) {
+                if (estadio.getMatriz()[i][j]==null||!estadio.getMatriz()[i][j].isDisponible()) {
                     continue;
                 }
                 switch (estadio.getMatriz()[i][j].getCategoria()) { //categorira
@@ -101,4 +102,6 @@ public class Evento {
         }
         System.out.println("--------------------------------------------------");
     }
+    
+
 }

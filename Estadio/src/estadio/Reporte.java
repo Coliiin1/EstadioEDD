@@ -65,6 +65,9 @@ public class Reporte {
     }
     
     public void mostrar(){
-        System.out.println(idVenta);
+        System.out.println("id: "+idVenta+" ingreso: "+ingreso+" Detalles:");
+        for(Boleto bol:boletos){
+            System.out.println(bol.toString());
+        }
     }
 }
