@@ -103,5 +103,11 @@ public class Evento {
         System.out.println("--------------------------------------------------");
     }
     
-
+    public int totalBoletosCategoria(LinkedList<Boleto> boletos){
+        int contador=0;
+        for(Boleto bol: boletos){
+            contador++;
+        }
+        return contador;
+    }
 }

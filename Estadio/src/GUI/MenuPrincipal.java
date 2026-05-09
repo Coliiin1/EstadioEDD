@@ -541,6 +541,10 @@ public class MenuPrincipal extends JFrame
     public JPanel ContenedorComprar()
     {
 
+        
+        eventoPrincipal.actualizarListas();
+        eventoPrincipal.imprimirlistas();
+        
         Font fontLabel = new Font("Arial", Font.BOLD, 15);
         Font fontInfo = new Font("Arial", Font.PLAIN, 14);
 
@@ -569,9 +573,9 @@ public class MenuPrincipal extends JFrame
         // Leyenda de colores
         JPanel panelLeyenda = new JPanel(new GridLayout(3, 1, 5, 8));
         panelLeyenda.setOpaque(false);
-        panelLeyenda.add(filaLeyenda("VIP", COLOR_VIP, fontInfo));
-        panelLeyenda.add(filaLeyenda("Preferencial", COLOR_PREF, fontInfo));
-        panelLeyenda.add(filaLeyenda("General", COLOR_GEN, fontInfo));
+        panelLeyenda.add(filaLeyenda("VIP: "+eventoPrincipal.totalBoletosCategoria(eventoPrincipal.boletosVip), COLOR_VIP, fontInfo));
+        panelLeyenda.add(filaLeyenda("Preferencial: "+eventoPrincipal.totalBoletosCategoria(eventoPrincipal.boletosPreferencial), COLOR_PREF, fontInfo));
+        panelLeyenda.add(filaLeyenda("General: "+eventoPrincipal.totalBoletosCategoria(eventoPrincipal.boletosGeneral), COLOR_GEN, fontInfo));
 
         // Panel combo + leyenda seleccionado
         JPanel panelFiltro = new JPanel(new GridLayout(4, 1, 5, 8));
@@ -621,7 +625,6 @@ public class MenuPrincipal extends JFrame
         btnConfirmar.addActionListener(e ->
         {
             eventoPrincipal.actualizarListas();
-            eventoPrincipal.imprimirlistas();
             // Verificar que haya al menos un asiento seleccionado
             if (contarSeleccionados() == 0)
             {
