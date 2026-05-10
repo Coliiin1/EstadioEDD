@@ -992,13 +992,49 @@ public class MenuPrincipal extends JFrame
                                 "Error al copiar la imagen:\n" + ex.getMessage(),
                                 "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                    f = selector.getSelectedFile();
-                    String name = f.getName().toLowerCase();
-                    if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".gif") || name.endsWith(".bmp")) {
-                        eventoPrincipal.rutaImg = f.getAbsolutePath(); //Guarda la ruta seleccionada
-                    } else {
-                        JOptionPane.showMessageDialog(MenuPrincipal.this, "Formato no válido. Elija jpg, png, gif o bmp.", "Error", JOptionPane.ERROR_MESSAGE);
+                    if (resultado == JFileChooser.APPROVE_OPTION)
+{
+                    try
+                    {
+                        Path carpetaDestino = Paths.get("src/Imagenes");
+
+                        if (!Files.exists(carpetaDestino))
+                        {
+                            Files.createDirectories(carpetaDestino);
+                        }
+
+                        Path archivoDestino =
+                                carpetaDestino.resolve(f.getName());
+
+                        Files.copy(
+                                f.toPath(),
+                                archivoDestino,
+                                StandardCopyOption.REPLACE_EXISTING
+                        );
+
+                        // ESTA ES LA RUTA QUE DEBES GUARDAR
+                        eventoPrincipal.rutaImg =
+                                archivoDestino.toString();
+
+                        JOptionPane.showMessageDialog(
+                                MenuPrincipal.this,
+                                "Imagen guardada:\n" + archivoDestino,
+                                "Éxito",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+
                     }
+                    catch (IOException ex)
+                    {
+                        JOptionPane.showMessageDialog(
+                                MenuPrincipal.this,
+                                "Error al copiar la imagen:\n"
+                                + ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                }
                 }
             }
         });
