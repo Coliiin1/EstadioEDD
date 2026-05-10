@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
  */
 public class Archivo {
     public static void crearReporte(Reporte rep){
+        /*
         DateTimeFormatter fortmato=DateTimeFormatter.ofPattern("ddMMyyyy");
         String fecha=rep.getFecha().format(fortmato);
         String dir="reporte_ventas_"+fecha+".txt";
@@ -33,5 +34,6 @@ public class Archivo {
         } catch (FileNotFoundException ex) {
             JOptionPane.showMessageDialog(null, "SE ENCONTRO UN ERROR");
         }
+*/
     }
 }

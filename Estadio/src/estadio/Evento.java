@@ -38,7 +38,6 @@ public class Evento {
         categorias.put("VIP", Categoria.VIP);
         categorias.put("PREFERENCIAL", Categoria.PREFERENCIAL);
         categorias.put("GENERAL", Categoria.GENERAL);
-        
         colaReportes=new LinkedList();
         
     }
@@ -110,4 +109,6 @@ public class Evento {
         }
         return contador;
     }
+    
+    
 }

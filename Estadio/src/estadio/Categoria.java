@@ -52,6 +52,6 @@ public enum Categoria
     
     @Override
     public String toString() {
-        return name() + " ($" + precio + ")";
+        return name();
     }
 }

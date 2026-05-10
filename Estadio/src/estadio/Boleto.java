@@ -23,6 +23,17 @@ public class Boleto
         this.categoria=this.asiento.getCategoria();
         this.estado = estado;
     }
+    public Boleto(String idBoleto,Categoria categoria, int fila, int columna,EstadoAsientos estado, Double precio)
+    {
+        this.idBoleto = idBoleto;
+        this.asiento=asiento;
+        this.categoria=categoria;
+        this.estado = estado;
+        Asientos asiento = new Asientos(fila, columna);
+        asiento.setCategoria(categoria);
+        asiento.setEstado(estado);
+        
+    }
 
     public double getPrecio()
     {
@@ -87,4 +98,9 @@ public class Boleto
                 + " Estado: " + estado;
         
     }
+    
+    public EstadoAsientos getEstado(){
+        return estado;
+    }
+    
 }

@@ -18,6 +18,12 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import BaseDatos.BaseDeDatos;
+import java.sql.SQLException;
+import java.util.Queue;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import Archivos.GenerarPDF;
 
 public class MenuPrincipal extends JFrame
 {
@@ -48,15 +54,16 @@ public class MenuPrincipal extends JFrame
     private JPanel margenCentral, navPanel, panelBotones;
     private JButton btnGuardarImg;
     private JButton btnGenerarReportes;
-    
+    private GenerarPDF ReportesPDF;
     
     public Evento eventoPrincipal;
     
     private DefaultTableModel modeloTabla;
     private double totalGanancias = 0.0;
     private JTextField txtGanancias;
+    BaseDeDatos baseDatos;
 
-    public MenuPrincipal()
+    public MenuPrincipal() throws SQLException
     {
         setTitle("Menu Principal Usuario");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,6 +85,15 @@ public class MenuPrincipal extends JFrame
         });
         setLayout(new BorderLayout());
         getContentPane().setBackground(BeigeB);
+         baseDatos= new BaseDeDatos();
+        baseDatos.IniciarConexion();
+        //baseDatos.GuardarAsientos(eventoPrincipal);
+        baseDatos.RecuperarAsientos(eventoPrincipal);
+        baseDatos.CerrarConexion();
+        baseDatos.IniciarConexion();
+        baseDatos.RecuperarEvento(eventoPrincipal);
+        baseDatos.CerrarConexion();
+        ReportesPDF = new GenerarPDF();
     }
 
     public void ContenedorPrincipal()
@@ -91,90 +107,183 @@ public class MenuPrincipal extends JFrame
     }
     
     public JPanel ContenedorReportes() {
-        // --- Panel imagen lateral (igual que en ContenedorPPrincipal) ---
-        Image imagenEvento = new ImageIcon("src/Imagenes/Icono.png").getImage();
+
+    // ── Paleta de colores actualizada ──────────────────────────────────────
+        Color BeigeBase    = new Color(237, 232, 220);  // fondo exterior
+        Color BeigeMedio   = new Color(232, 224, 206);  // panel central
+        Color BeigeOscuro  = new Color(197, 185, 154);  // bordes beige
+        Color VerdeOscuro  = new Color(42,  92,  62);   // sidebar verde
+        Color VerdeBoton   = new Color(61, 122, 85);    // botón generar / campo ganancias
+        Color VerdeTexto   = new Color(200, 237, 216);  // texto sobre verde
+        Color BeigeBoton   = new Color(197, 185, 154);  // botón PDF
+        Color TableHeader  = new Color(212, 201, 174);  // cabecera tabla
+        Color TablePar     = new Color(237, 232, 220);
+        Color TableImpar   = new Color(228, 220, 202);
+        Color TextoOscuro  = new Color(58, 48, 32);
+
+        // ── Imagen lateral ─────────────────────────────────────────────────────
+        Image imagenEvento = new ImageIcon("src/Imagenes/ChivoCordoba1.jpeg").getImage();
         JPanel panelImg = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setClip(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 40, 40));
+                g2.setClip(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 28, 28));
                 g2.drawImage(imagenEvento, 0, 0, getWidth(), getHeight(), this);
                 g2.dispose();
             }
         };
         panelImg.setOpaque(false);
-        panelImg.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
-        panelImg.setPreferredSize(new Dimension(280, 0));
+        panelImg.setBorder(new RoundedBorder(28, VerdeBoton, 2));
+        panelImg.setPreferredSize(new Dimension(172, 130));
 
-        // --- Botón Generar Reporte en panel lateral ---
+        // ── Botón Generar Reporte ───────────────────────────────────────────────
         JButton btnGenerar = crearBotonRedondeado("Generar reporte", VerdeTarjeta);
-        btnGenerar.setFont(new Font("Arial", Font.BOLD, 18));
-        btnGenerar.setPreferredSize(new Dimension(220, 50));
-        // btnGenerar.addActionListener(e -> generarReporte());
+        btnGenerar.setFont(new Font("Arial", Font.BOLD, 13));
+        btnGenerar.setForeground(VerdeTexto);
+        btnGenerar.setPreferredSize(new Dimension(172, 38));
+        btnGenerar.addActionListener(e -> {
+            baseDatos.IniciarConexion();
+            eventoPrincipal.colaReportes.clear();
+            baseDatos.recuperarCola(eventoPrincipal);
+            baseDatos.CerrarConexion();
+            cargarTablaReportes();
+        });
 
-        JPanel bottomLateral = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        // ── Botón Guardar PDF ───────────────────────────────────────────────────
+        JButton btnPDF = crearBotonRedondeado("Guardar como PDF", BeigeBoton);
+        btnPDF.setFont(new Font("Arial", Font.BOLD, 13));
+        btnPDF.setForeground(TextoOscuro);
+        btnPDF.setPreferredSize(new Dimension(172, 38));
+        btnPDF.addActionListener(e -> {
+            baseDatos.IniciarConexion();
+            baseDatos.recuperarCola(eventoPrincipal);
+            for (Reporte rep : eventoPrincipal.colaReportes) {
+                ReportesPDF.generarPDF(rep);
+            }
+            baseDatos.CerrarConexion();
+            JOptionPane.showMessageDialog(null, "PDF'S Generados Correctamente");
+        });
+
+        // ── Panel inferior del sidebar ──────────────────────────────────────────
+        JPanel bottomLateral = new JPanel();
+        bottomLateral.setLayout(new BoxLayout(bottomLateral, BoxLayout.Y_AXIS));
         bottomLateral.setOpaque(false);
+        bottomLateral.setBorder(new EmptyBorder(8, 0, 0, 0));
+        btnGenerar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnPDF.setAlignmentX(Component.CENTER_ALIGNMENT);
         bottomLateral.add(btnGenerar);
+        bottomLateral.add(Box.createVerticalStrut(8));
+        bottomLateral.add(btnPDF);
 
-        // --- Panel lateral derecho (igual estilo que panelLateral en ContenedorPPrincipal) ---
-        JPanel panelLateralReporte = panelRedondeado(VerdeB, 40, new BorderLayout());
-        panelLateralReporte.setPreferredSize(new Dimension(320, 0));
-        panelLateralReporte.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
+        // ── Sidebar derecho ─────────────────────────────────────────────────────
+        JPanel panelLateralReporte = panelRedondeado(VerdeB, 36, new BorderLayout(0, 10));
+        panelLateralReporte.setPreferredSize(new Dimension(200, 0));
+        panelLateralReporte.setBorder(new CompoundBorder(
+            new RoundedBorder(36, VerdeBoton, 2),
+            new EmptyBorder(12, 14, 14, 14)
+        ));
         panelLateralReporte.add(panelImg, BorderLayout.CENTER);
         panelLateralReporte.add(bottomLateral, BorderLayout.SOUTH);
 
-        // --- Tabla ---
+        // ── Tabla ───────────────────────────────────────────────────────────────
         String[] columnas = {"Fecha", "Categoría", "Asientos", "Precio"};
         modeloTabla = new DefaultTableModel(columnas, 0);
-        JTable tablaReporte = new JTable(modeloTabla);
-        tablaReporte.setBackground(BeigeB);
-        tablaReporte.setRowHeight(55);
-        tablaReporte.getTableHeader().setFont(new Font("Arial", Font.BOLD, 16));
-        tablaReporte.setFont(new Font("Arial", Font.PLAIN, 15));
+
+        JTable tablaReporte = new JTable(modeloTabla) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+                Component c = super.prepareRenderer(renderer, row, col);
+                c.setBackground(row % 2 == 0 ? TablePar : TableImpar);
+                c.setForeground(new Color(90, 79, 60));
+                return c;
+            }
+        };
+        tablaReporte.setRowHeight(46);
+        tablaReporte.setShowGrid(false);
+        tablaReporte.setIntercellSpacing(new Dimension(0, 0));
+        tablaReporte.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        // Cabecera de tabla personalizada
+        JTableHeader header = tablaReporte.getTableHeader();
+        header.setBackground(TableHeader);
+        header.setForeground(new Color(74, 63, 44));
+        header.setFont(new Font("Arial", Font.BOLD, 13));
+        header.setPreferredSize(new Dimension(0, 36));
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, BeigeOscuro));
 
         JScrollPane scrollTabla = new JScrollPane(tablaReporte);
         scrollTabla.setOpaque(false);
-        scrollTabla.getViewport().setBackground(BeigeB);
-        scrollTabla.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        scrollTabla.getViewport().setBackground(TablePar);
+        scrollTabla.setBorder(new RoundedBorder(12, BeigeOscuro, 2));
 
-        // --- Ganancias al fondo de la tabla ---
+        // ── Fila de ganancias ───────────────────────────────────────────────────
         JLabel lblGanancias = new JLabel("Ganancias Generadas:");
-        lblGanancias.setFont(new Font("Arial", Font.BOLD, 22));
-        lblGanancias.setForeground(new Color(50, 50, 50));
+        lblGanancias.setFont(new Font("Arial", Font.BOLD, 17));
+        lblGanancias.setForeground(TextoOscuro);
 
         txtGanancias = new JTextField("$0.00");
-        txtGanancias.setBackground(VerdeB);
+        txtGanancias.setBackground(VerdeTarjeta);
+        txtGanancias.setForeground(VerdeTexto);
         txtGanancias.setEditable(false);
         txtGanancias.setHorizontalAlignment(JTextField.CENTER);
-        txtGanancias.setFont(new Font("Arial", Font.BOLD, 18));
-        txtGanancias.setPreferredSize(new Dimension(180, 40));
-        txtGanancias.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
+        txtGanancias.setFont(new Font("Arial", Font.BOLD, 15));
+        txtGanancias.setPreferredSize(new Dimension(130, 36));
+        txtGanancias.setBorder(new RoundedBorder(10, VerdeBoton, 0));
 
-        JPanel panelGanancias = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        JPanel panelGanancias = new JPanel(new FlowLayout(FlowLayout.CENTER, 14, 8));
         panelGanancias.setOpaque(false);
         panelGanancias.add(lblGanancias);
         panelGanancias.add(txtGanancias);
 
-        // --- Panel central: tabla + ganancias ---
-        JPanel panelCentro = panelRedondeado(new Color(230, 220, 200), 40, new BorderLayout(0, 5));
-        panelCentro.setBorder(new EmptyBorder(15, 15, 10, 15));
+        // ── Panel central ───────────────────────────────────────────────────────
+        JPanel panelCentro = panelRedondeado(BeigeMedio, 18, new BorderLayout(0, 6));
+        panelCentro.setBorder(new CompoundBorder(
+            new RoundedBorder(18, BeigeB, 2),
+            new EmptyBorder(12, 12, 10, 12)
+        ));
         panelCentro.add(scrollTabla, BorderLayout.CENTER);
         panelCentro.add(panelGanancias, BorderLayout.SOUTH);
 
-        // --- Contenedor principal (mismo estilo que en ContenedorPPrincipal) ---
-        JPanel contenedor = panelRedondeado(new Color(230, 220, 200), 45, new BorderLayout(15, 0));
-        contenedor.setBorder(new EmptyBorder(15, 15, 15, 15));
+        // ── Contenedor principal ────────────────────────────────────────────────
+        JPanel contenedor = panelRedondeado(BeigeBase, 22, new BorderLayout(14, 0));
+        contenedor.setBorder(new EmptyBorder(14, 14, 14, 14));
         contenedor.add(panelCentro, BorderLayout.CENTER);
         contenedor.add(panelLateralReporte, BorderLayout.EAST);
 
         JPanel margen = wrapConMargen(contenedor, 0, 15, 15, 15);
-        margen.setBackground(BeigeB);
+        margen.setBackground(BeigeBase);
         return margen;
     }
 
-       
+    private void cargarTablaReportes(){
+        modeloTabla.setRowCount(0);
+        double gananciasTotales = 0;
+        Queue<Reporte> cola = eventoPrincipal.colaReportes;
+        for (Reporte rep : cola)
+        {
+            String fecha = rep.getFecha().toString();
+            String categoria = rep.getCategoria().toString();
+            StringBuilder asientos = new StringBuilder();
+            //for (Boleto b : rep.getBoletos())
+            //{
+            //    asientos.append(b.getNumeroAsiento()).append(" ");
+            //}
+            double ingreso = rep.getIngreso();
+            gananciasTotales += ingreso;
+            modeloTabla.addRow(new Object[]
+            {
+                fecha,
+                categoria,
+                rep.getNumero_boletos(),
+                "$" + ingreso
+            });
+            
+        }
+
+        txtGanancias.setText("$" + gananciasTotales);
+    }
     
     
     // =========================================================
@@ -211,7 +320,7 @@ public class MenuPrincipal extends JFrame
         izquierda.add(lblNombre);
 
         btnEventoPrincipal = crearBotonNav("Evento Principal");
-        btnGenerarReportes = crearBotonNav("Generar Reportes");
+        btnGenerarReportes = crearBotonNav("Reportes");
         btnInfoGeneral = crearBotonNav("Informacion General");
         btnIngresa = crearBotonNav("Ingresa");
         btnModificar = crearBotonNav("Modificar Evento");
@@ -375,7 +484,7 @@ public class MenuPrincipal extends JFrame
         JPanel panelFilas = new JPanel(new GridLayout(eventoPrincipal.estadio.getFILAS(), 1, 0, 3));
         panelFilas.setOpaque(false);
         panelFilas.setBorder(new EmptyBorder(6, 0, 6, 8));
-        for (int f = eventoPrincipal.estadio.getFILAS()-1; f >= 0; f--)
+        for (int f = 0; f <= eventoPrincipal.estadio.getFILAS()-1; f++)
         {
             JLabel lbl = new JLabel("F" + (f + 1), SwingConstants.RIGHT);
             lbl.setFont(fontLabel);
@@ -642,7 +751,9 @@ public class MenuPrincipal extends JFrame
             
             JOptionPane.showMessageDialog(this,
                 "Compra confirmada\nTotal: $" + String.format("%.2f", total),
+                
                 "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+               
                 mostrarContenido(ContenedorPPrincipal());
 
             // Marcar los asientos seleccionados como OCUPADO y repintar sus botones
@@ -665,12 +776,25 @@ public class MenuPrincipal extends JFrame
                     }
                 }
             }
-
+            try {
+                baseDatos.IniciarConexion();
+                baseDatos.ActualizarAsientos(eventoPrincipal);
+                baseDatos.CerrarConexion();
+            } catch (SQLException ex) {
+                System.getLogger(MenuPrincipal.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
             // Registrar reporte
-            eventoPrincipal.colaReportes.add(
-                new Reporte(1, boletosComprados, (int)seleccionados, (Categoria) comboCategoria.getSelectedItem()));
-            eventoPrincipal.colaReportes.peek().mostrar();
-
+            seleccionados = boletosComprados.size();
+            baseDatos.IniciarConexion();
+            try {
+                Reporte repo = new Reporte(1, boletosComprados, (int)seleccionados, (Categoria) comboCategoria.getSelectedItem());
+                //
+                eventoPrincipal.colaReportes.peek().mostrar();
+                baseDatos.GuardarReporte(repo);
+            } catch (SQLException ex) {
+                System.getLogger(MenuPrincipal.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+            baseDatos.CerrarConexion();
             // Resetear totales
             seleccionados = 0;
             total = 0;
@@ -892,6 +1016,7 @@ public class MenuPrincipal extends JFrame
             String descripcion = txtDesc.getText().trim();
 
             if (fechaSeleccionada == null || nombre.isEmpty() || descripcion.isEmpty() || eventoPrincipal.rutaImg.equals("")) {
+                
                 JOptionPane.showMessageDialog(null, "Llena todos los campos");
                 return; //detiene la ejecución, no guarda nada
             }
@@ -901,6 +1026,12 @@ public class MenuPrincipal extends JFrame
                 eventoPrincipal.nombreEvento = nombre.toUpperCase();
                 eventoPrincipal.Descripcion = descripcion;
                 eventoPrincipal.ImpEvento();
+                baseDatos.IniciarConexion();
+                baseDatos.ActualizarAsientos(eventoPrincipal);
+                baseDatos.CerrarConexion();
+                baseDatos.IniciarConexion();
+                baseDatos.ActualizarEvento(eventoPrincipal);
+                baseDatos.CerrarConexion();
                 JOptionPane.showMessageDialog(null, "Evento Guardado Correctamente");
 
             } catch (Exception ex) {

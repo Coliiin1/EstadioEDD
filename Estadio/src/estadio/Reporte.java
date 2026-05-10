@@ -4,7 +4,7 @@
  */
 package estadio;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 
 /**
@@ -13,7 +13,7 @@ import java.util.LinkedList;
  */
 public class Reporte {
     private int idVenta;
-    private LocalDate fecha;
+    private LocalDateTime fecha;
     private LinkedList<Boleto> boletos;
     private int numero_boletos;
     private Categoria categoria;
@@ -21,18 +21,28 @@ public class Reporte {
 
     public Reporte(int idVenta, LinkedList<Boleto> boletos, int numero_boletos, Categoria categoria) {
         this.idVenta = idVenta;
-        this.fecha = LocalDate.now();
+        this.fecha = LocalDateTime.now();
         this.boletos = boletos;
         this.numero_boletos = numero_boletos;
         this.categoria = categoria;
         this.ingreso = calcularIngreso();
     }
     
+    public Reporte(int idVenta, LocalDateTime fecha, LinkedList<Boleto> boletos, int numero_boletos, Categoria categoria){
+        this.idVenta = idVenta;
+        this.fecha = fecha;
+        this.boletos = boletos;
+        this.numero_boletos = numero_boletos;
+        this.categoria = categoria;
+        this.ingreso = calcularIngreso();
+        System.out.println("Si genera reporte");
+    }
+    
     public int getIdVenta() {
         return idVenta;
     }
 
-    public LocalDate getFecha() {
+    public Object getFecha() {
         return fecha;
     }
 
