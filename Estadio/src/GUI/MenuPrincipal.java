@@ -25,8 +25,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import Archivos.GenerarPDF;
 
-public class MenuPrincipal extends JFrame
-{
+public class MenuPrincipal extends JFrame {
 
     static final Color VerdeB = new Color(76, 175, 80);
     static final Color BeigeB = new Color(243, 232, 211);
@@ -37,16 +36,16 @@ public class MenuPrincipal extends JFrame
     static final Color COLOR_GRATIS = new Color(236, 239, 241);
     static final Color COLOR_INACTIVO = new Color(60, 60, 60);
     long seleccionados;
-    
+
     public JLabel lblTotal;
-    
+
     private EstadioClass estadio;
-    
+
     private JButton[][] botonesAsientos;
     private Categoria categoriaSeleccionada = Categoria.GENERAL;
     private Login login = new Login();
     private double total = 0;
-    private LinkedList<Boleto> boletosComprados; 
+    private LinkedList<Boleto> boletosComprados;
     public JButton btnEventoPrincipal, btnInfoGeneral, btnIngresa,
             btnComprar, btnSalir, btnModificar;
     public JPanel panelImagen, panelLateral;
@@ -55,37 +54,34 @@ public class MenuPrincipal extends JFrame
     private JButton btnGuardarImg;
     private JButton btnGenerarReportes;
     private GenerarPDF ReportesPDF;
-    
+
     public Evento eventoPrincipal;
-    
+
     private DefaultTableModel modeloTabla;
     private double totalGanancias = 0.0;
     private JTextField txtGanancias;
     BaseDeDatos baseDatos;
 
-    public MenuPrincipal() throws SQLException
-    {
+    public MenuPrincipal() throws SQLException {
         setTitle("Menu Principal Usuario");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1100, 700));
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setIconImage(getToolkit().getImage(getClass().getResource("/Imagenes/Logo.png")));
         this.estadio = new EstadioClass();
-        this.boletosComprados=new LinkedList<>();
+        this.boletosComprados = new LinkedList<>();
         this.eventoPrincipal = new Evento("Evento");
         this.botonesAsientos = new JButton[eventoPrincipal.estadio.getFILAS()][eventoPrincipal.estadio.getCOLUMNAS()];
-        addComponentListener(new ComponentAdapter()
-        {
+        addComponentListener(new ComponentAdapter() {
             @Override
-            public void componentResized(ComponentEvent e)
-            {
+            public void componentResized(ComponentEvent e) {
                 revalidate();
                 repaint();
             }
         });
         setLayout(new BorderLayout());
         getContentPane().setBackground(BeigeB);
-         baseDatos= new BaseDeDatos();
+        baseDatos = new BaseDeDatos();
         baseDatos.IniciarConexion();
         //baseDatos.GuardarAsientos(eventoPrincipal);
         baseDatos.RecuperarAsientos(eventoPrincipal);
@@ -96,8 +92,7 @@ public class MenuPrincipal extends JFrame
         ReportesPDF = new GenerarPDF();
     }
 
-    public void ContenedorPrincipal()
-    {
+    public void ContenedorPrincipal() {
         margenCentral = new JPanel(new BorderLayout());
         margenCentral.setBackground(BeigeB);
         actualizarNavbar();
@@ -105,21 +100,21 @@ public class MenuPrincipal extends JFrame
         mostrarContenido(ContenedorPPrincipal());
         login.Contenedor();
     }
-    
+
     public JPanel ContenedorReportes() {
 
-    // ── Paleta de colores actualizada ──────────────────────────────────────
-        Color BeigeBase    = new Color(237, 232, 220);  // fondo exterior
-        Color BeigeMedio   = new Color(232, 224, 206);  // panel central
-        Color BeigeOscuro  = new Color(197, 185, 154);  // bordes beige
-        Color VerdeOscuro  = new Color(42,  92,  62);   // sidebar verde
-        Color VerdeBoton   = new Color(61, 122, 85);    // botón generar / campo ganancias
-        Color VerdeTexto   = new Color(200, 237, 216);  // texto sobre verde
-        Color BeigeBoton   = new Color(197, 185, 154);  // botón PDF
-        Color TableHeader  = new Color(212, 201, 174);  // cabecera tabla
-        Color TablePar     = new Color(237, 232, 220);
-        Color TableImpar   = new Color(228, 220, 202);
-        Color TextoOscuro  = new Color(58, 48, 32);
+        // ── Paleta de colores actualizada ──────────────────────────────────────
+        Color BeigeBase = new Color(237, 232, 220);  // fondo exterior
+        Color BeigeMedio = new Color(232, 224, 206);  // panel central
+        Color BeigeOscuro = new Color(197, 185, 154);  // bordes beige
+        Color VerdeOscuro = new Color(42, 92, 62);   // sidebar verde
+        Color VerdeBoton = new Color(61, 122, 85);    // botón generar / campo ganancias
+        Color VerdeTexto = new Color(200, 237, 216);  // texto sobre verde
+        Color BeigeBoton = new Color(197, 185, 154);  // botón PDF
+        Color TableHeader = new Color(212, 201, 174);  // cabecera tabla
+        Color TablePar = new Color(237, 232, 220);
+        Color TableImpar = new Color(228, 220, 202);
+        Color TextoOscuro = new Color(58, 48, 32);
 
         // ── Imagen lateral ─────────────────────────────────────────────────────
         Image imagenEvento = new ImageIcon("src/Imagenes/ChivoCordoba1.jpeg").getImage();
@@ -181,8 +176,8 @@ public class MenuPrincipal extends JFrame
         JPanel panelLateralReporte = panelRedondeado(VerdeB, 36, new BorderLayout(0, 10));
         panelLateralReporte.setPreferredSize(new Dimension(200, 0));
         panelLateralReporte.setBorder(new CompoundBorder(
-            new RoundedBorder(36, VerdeBoton, 2),
-            new EmptyBorder(12, 14, 14, 14)
+                new RoundedBorder(36, VerdeBoton, 2),
+                new EmptyBorder(12, 14, 14, 14)
         ));
         panelLateralReporte.add(panelImg, BorderLayout.CENTER);
         panelLateralReporte.add(bottomLateral, BorderLayout.SOUTH);
@@ -240,8 +235,8 @@ public class MenuPrincipal extends JFrame
         // ── Panel central ───────────────────────────────────────────────────────
         JPanel panelCentro = panelRedondeado(BeigeMedio, 18, new BorderLayout(0, 6));
         panelCentro.setBorder(new CompoundBorder(
-            new RoundedBorder(18, BeigeB, 2),
-            new EmptyBorder(12, 12, 10, 12)
+                new RoundedBorder(18, BeigeB, 2),
+                new EmptyBorder(12, 12, 10, 12)
         ));
         panelCentro.add(scrollTabla, BorderLayout.CENTER);
         panelCentro.add(panelGanancias, BorderLayout.SOUTH);
@@ -257,12 +252,11 @@ public class MenuPrincipal extends JFrame
         return margen;
     }
 
-    private void cargarTablaReportes(){
+    private void cargarTablaReportes() {
         modeloTabla.setRowCount(0);
         double gananciasTotales = 0;
         Queue<Reporte> cola = eventoPrincipal.colaReportes;
-        for (Reporte rep : cola)
-        {
+        for (Reporte rep : cola) {
             String fecha = rep.getFecha().toString();
             String categoria = rep.getCategoria().toString();
             StringBuilder asientos = new StringBuilder();
@@ -272,34 +266,29 @@ public class MenuPrincipal extends JFrame
             //}
             double ingreso = rep.getIngreso();
             gananciasTotales += ingreso;
-            modeloTabla.addRow(new Object[]
-            {
+            modeloTabla.addRow(new Object[]{
                 fecha,
                 categoria,
                 rep.getNumero_boletos(),
                 "$" + ingreso
             });
-            
+
         }
 
         txtGanancias.setText("$" + gananciasTotales);
     }
-    
-    
+
     // =========================================================
     // NAVBAR DINÁMICA
     // =========================================================
-    private void actualizarNavbar()
-    {
+    private void actualizarNavbar() {
         JPanel panelFondo = panelRedondeado(VerdeTarjeta, 40, new BorderLayout());
         panelFondo.setBorder(new EmptyBorder(10, 15, 10, 15));
 
         Image imagenLogo = new ImageIcon("src/Imagenes/Logo.png").getImage();
-        JLabel lblLogo = new JLabel()
-        {
+        JLabel lblLogo = new JLabel() {
             @Override
-            protected void paintComponent(Graphics g)
-            {
+            protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setClip(new Ellipse2D.Float(0, 0, getWidth(), getHeight()));
@@ -326,16 +315,14 @@ public class MenuPrincipal extends JFrame
         btnModificar = crearBotonNav("Modificar Evento");
         btnSalir = crearBotonNav("Cerrar sesion");
 
-        if (Admin)
-        {
+        if (Admin) {
             panelBotones = new JPanel(new GridLayout(1, 4, 15, 0));
             panelBotones.setOpaque(false);
             panelBotones.setPreferredSize(new Dimension(850, 45));
             panelBotones.add(btnGenerarReportes);
             panelBotones.add(btnModificar);
             panelBotones.add(btnSalir);
-        } else
-        {
+        } else {
             panelBotones = new JPanel(new GridLayout(1, 3, 15, 0));
             panelBotones.setOpaque(false);
             panelBotones.setPreferredSize(new Dimension(650, 45));
@@ -347,8 +334,7 @@ public class MenuPrincipal extends JFrame
         panelFondo.add(izquierda, BorderLayout.WEST);
         panelFondo.add(panelBotones, BorderLayout.CENTER);
 
-        if (navPanel != null)
-        {
+        if (navPanel != null) {
             remove(navPanel);
         }
         navPanel = wrapConMargen(panelFondo, 15, 15, 10, 15);
@@ -360,29 +346,25 @@ public class MenuPrincipal extends JFrame
         btnEventoPrincipal.addActionListener(e -> mostrarContenido(ContenedorPPrincipal()));
         btnInfoGeneral.addActionListener(e -> mostrarContenido(ContenedorInfo()));
 
-        if (Admin)
-        {
+        if (Admin) {
             btnModificar.addActionListener(e -> mostrarContenido(ContenedorModEvento()));
-            btnSalir.addActionListener(e ->
-            {
+            btnSalir.addActionListener(e
+                    -> {
                 Admin = false;
                 actualizarNavbar();
                 mostrarContenido(ContenedorPPrincipal());
             });
             btnGenerarReportes.addActionListener(e -> mostrarContenido(ContenedorReportes()));
-        } else
-        {
-            btnIngresa.addActionListener(e ->
-            {
+        } else {
+            btnIngresa.addActionListener(e
+                    -> {
                 login.setVisible(true);
-                for (ActionListener l : login.btnLogin.getActionListeners())
-                {
+                for (ActionListener l : login.btnLogin.getActionListeners()) {
                     login.btnLogin.removeActionListener(l);
                 }
-                login.btnLogin.addActionListener(f ->
-                {
-                    if (login.Entrar(login.txtUser.getText(), login.txtPass.getText()))
-                    {
+                login.btnLogin.addActionListener(f
+                        -> {
+                    if (login.Entrar(login.txtUser.getText(), login.txtPass.getText())) {
                         login.setVisible(false);
                         Admin = true;
                         actualizarNavbar();
@@ -396,14 +378,11 @@ public class MenuPrincipal extends JFrame
     // =========================================================
     // CONTENEDOR PRINCIPAL (imagen evento + lateral)
     // =========================================================
-    public JPanel ContenedorPPrincipal()
-    {
+    public JPanel ContenedorPPrincipal() {
         Image imagenEvento = new ImageIcon(eventoPrincipal.rutaImg).getImage();
-        panelImagen = new JPanel()
-        {
+        panelImagen = new JPanel() {
             @Override
-            protected void paintComponent(Graphics g)
-            {
+            protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -418,14 +397,14 @@ public class MenuPrincipal extends JFrame
         panelLateral = panelRedondeado(VerdeB, 40, new BorderLayout());
         panelLateral.setPreferredSize(new Dimension(320, 0));
         panelLateral.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
-        
+
         // -- Titulo del evento en un Label
         JLabel labelTitulo = new JLabel(eventoPrincipal.nombreEvento); // ajusta el campo según tu objeto
         labelTitulo.setFont(new Font("Arial", Font.BOLD, 30));
         labelTitulo.setForeground(BeigeB);
         labelTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         labelTitulo.setBorder(new EmptyBorder(15, 10, 5, 10));
-        
+
         // --- TEXTAREA para desc del evento ---
         JTextArea DescEvento = new JTextArea();
         DescEvento.setLineWrap(true);
@@ -474,8 +453,7 @@ public class MenuPrincipal extends JFrame
     // modoCompra=false → asientos clickeables para asignar categoría (admin)
     // =========================================================
     private JPanel crearMatrizAsientos(boolean modoCompra,
-            JComboBox<Categoria> comboCategoria)
-    {
+            JComboBox<Categoria> comboCategoria) {
 
         final int MAX_BOLETOS = 5;
         final Color COLOR_INACTIVO = new Color(60, 60, 60);
@@ -484,8 +462,7 @@ public class MenuPrincipal extends JFrame
         JPanel panelFilas = new JPanel(new GridLayout(eventoPrincipal.estadio.getFILAS(), 1, 0, 3));
         panelFilas.setOpaque(false);
         panelFilas.setBorder(new EmptyBorder(6, 0, 6, 8));
-        for (int f = 0; f <= eventoPrincipal.estadio.getFILAS()-1; f++)
-        {
+        for (int f = 0; f <= eventoPrincipal.estadio.getFILAS() - 1; f++) {
             JLabel lbl = new JLabel("F" + (f + 1), SwingConstants.RIGHT);
             lbl.setFont(fontLabel);
             panelFilas.add(lbl);
@@ -496,57 +473,48 @@ public class MenuPrincipal extends JFrame
                 new RoundedBorder(20, VerdeTarjeta, 5),
                 new EmptyBorder(6, 6, 6, 6)));
 
-        for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++)
-        {
-            for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++)
-            {
-                
+        for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++) {
+            for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++) {
+
                 Asientos asiento = eventoPrincipal.estadio.getAsiento(f, c);
                 JButton btn = new JButton();
                 btn.setPreferredSize(new Dimension(25, 25));
                 btn.setFocusPainted(false);
                 btn.setMargin(new Insets(0, 0, 0, 0));
-                if(eventoPrincipal.estadio.getAsiento(f, c)==null){
-                 btn.setVisible(false);
-                 botonesAsientos[f][c] = btn;
-                 panelMatriz.add(btn);
-                 continue;
+                if (eventoPrincipal.estadio.getAsiento(f, c) == null) {
+                    btn.setVisible(false);
+                    botonesAsientos[f][c] = btn;
+                    panelMatriz.add(btn);
+                    continue;
                 }
-                if (eventoPrincipal.estadio.getAsiento(f, c).getEstado() == EstadoAsientos.OCUPADO)
-                {
+                if (eventoPrincipal.estadio.getAsiento(f, c).getEstado() == EstadoAsientos.OCUPADO) {
                     btn.setBackground(COLOR_INACTIVO);
                     btn.setBorder(null);
                     btn.setEnabled(false);
                 }
                 actualizarColorBoton(btn, asiento.getCategoria());
-                
 
                 final int fila = f, col = c;
 
                 //Aqui estaba el problema
-                if (!modoCompra)
-                {
+                if (!modoCompra) {
                     //Esto solo es para que el adminasigne la categoria al asiento inmediatamente 
-                    btn.addActionListener(e ->
-                    {
+                    btn.addActionListener(e
+                            -> {
                         eventoPrincipal.estadio.asignarCategoria(fila, col, categoriaSeleccionada);
                         actualizarColorBoton(btn, categoriaSeleccionada);
                     });
-                } else
-                {
-                    btn.addActionListener(e ->
-                    {
+                } else {
+                    btn.addActionListener(e
+                            -> {
                         //solo actua si el boton esta habilitado
-                        if (!btn.isEnabled())
-                        {
+                        if (!btn.isEnabled()) {
                             return;
                         }
-                        if (!asiento.isSeleccionado())
-                        {
+                        if (!asiento.isSeleccionado()) {
                             //si se intenta seleccionar
                             seleccionados = contarSeleccionados();
-                            if (seleccionados >= MAX_BOLETOS)
-                            {
+                            if (seleccionados >= MAX_BOLETOS) {
                                 JOptionPane.showMessageDialog(null, "Limite de " + MAX_BOLETOS + " boletos por transaccion", "Limite alcanzado", JOptionPane.INFORMATION_MESSAGE);
                                 return;//no cambia nada
                             }
@@ -556,8 +524,7 @@ public class MenuPrincipal extends JFrame
                             total = calcularTotal();
                             lblTotal.setText(String.format("Total: $%.2f", total));
                             lblTotal.repaint();
-                        } else
-                        {
+                        } else {
                             //deseleccionar
                             asiento.setSeleccionado(false);
                             actualizarColorBoton(btn, asiento.getCategoria());
@@ -575,25 +542,21 @@ public class MenuPrincipal extends JFrame
         }
         filtrarMatrizPorCategoria((Categoria) comboCategoria.getSelectedItem(), COLOR_INACTIVO);//esto deberia funcionar para desactivar los asientos ya vendidos
         // Filtrado por categoría: solo en modo compra
-        if (modoCompra && comboCategoria != null)
-        {
+        if (modoCompra && comboCategoria != null) {
             // Aplica filtro inicial con la categoría ya seleccionada en el combo
             filtrarMatrizPorCategoria((Categoria) comboCategoria.getSelectedItem(), COLOR_INACTIVO);
 
-            comboCategoria.addActionListener(e ->
-            {
+            comboCategoria.addActionListener(e
+                    -> {
                 Categoria nueva = (Categoria) comboCategoria.getSelectedItem();
                 // Limpia selecciones previas antes de cambiar de categoría
-                for (int f2 = 0; f2 < eventoPrincipal.estadio.getFILAS(); f2++)
-                {
-                    for (int c2 = 0; c2 <eventoPrincipal.estadio.getCOLUMNAS(); c2++)
-                    {
+                for (int f2 = 0; f2 < eventoPrincipal.estadio.getFILAS(); f2++) {
+                    for (int c2 = 0; c2 < eventoPrincipal.estadio.getCOLUMNAS(); c2++) {
                         Asientos a = eventoPrincipal.estadio.getAsiento(f2, c2);
-                        if (a==null) {
+                        if (a == null) {
                             continue;
                         }
-                        if (a.isSeleccionado())
-                        {
+                        if (a.isSeleccionado()) {
                             a.setSeleccionado(false);
                             actualizarColorBoton(botonesAsientos[f2][c2], a.getCategoria());
                             botonesAsientos[f2][c2].setBorder(null);
@@ -603,63 +566,62 @@ public class MenuPrincipal extends JFrame
                 filtrarMatrizPorCategoria(nueva, COLOR_INACTIVO);
             });
         }
+        JPanel panelColumnas = new JPanel(new GridLayout(1,eventoPrincipal.estadio.getCOLUMNAS(),3,0));
+        panelColumnas.setOpaque(false);
+        panelColumnas.setBorder(new EmptyBorder(8,6,6,8));
+        for (int c = 0; c <= eventoPrincipal.estadio.getCOLUMNAS()-1; c++) {
+            JLabel lbl = new JLabel("C" + (c+1), SwingConstants.CENTER);
+            lbl.setFont(fontLabel);
+            panelColumnas.add(lbl);
+        }
         JPanel contenedorMatriz = new JPanel(new BorderLayout());
         contenedorMatriz.setOpaque(false);
         contenedorMatriz.add(panelFilas, BorderLayout.WEST);
         contenedorMatriz.add(panelMatriz, BorderLayout.CENTER);
+        contenedorMatriz.add(panelColumnas, BorderLayout.SOUTH);
         return contenedorMatriz;
     }
 
     // =========================================================
     // Habilita/resalta asientos de la categoría elegida; apaga y deshabilita los demás
-    private void filtrarMatrizPorCategoria(Categoria cat, Color colorInactivo)
-{
-    for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++)
-    {
-        for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++)
-        {
-            Asientos a = eventoPrincipal.estadio.getAsiento(f, c);
-            if(a==null){
-                continue;
-            }
-            JButton btn = botonesAsientos[f][c];
+    private void filtrarMatrizPorCategoria(Categoria cat, Color colorInactivo) {
+        for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++) {
+            for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++) {
+                Asientos a = eventoPrincipal.estadio.getAsiento(f, c);
+                if (a == null) {
+                    continue;
+                }
+                JButton btn = botonesAsientos[f][c];
 
-            // Si está ocupado, siempre gris y deshabilitado sin importar el filtro
-            if (a.getEstado() == EstadoAsientos.OCUPADO)
-            {
-                btn.setBackground(colorInactivo);
-                btn.setBorder(null);
-                btn.setEnabled(false);
-            }
-            else if (a.getCategoria() == cat)
-            {
-                // Pertenece a la categoría filtrada: habilitar y colorear normal
-                actualizarColorBoton(btn, a.getCategoria());
-                btn.setBorder(null);
-                btn.setEnabled(true);
-            }
-            else
-            {
-                // Otra categoría: gris y deshabilitado
-                btn.setBackground(colorInactivo);
-                btn.setBorder(null);
-                btn.setEnabled(false);
+                // Si está ocupado, siempre gris y deshabilitado sin importar el filtro
+                if (a.getEstado() == EstadoAsientos.OCUPADO) {
+                    btn.setBackground(colorInactivo);
+                    btn.setBorder(null);
+                    btn.setEnabled(false);
+                } else if (a.getCategoria() == cat) {
+                    // Pertenece a la categoría filtrada: habilitar y colorear normal
+                    actualizarColorBoton(btn, a.getCategoria());
+                    btn.setBorder(null);
+                    btn.setEnabled(true);
+                } else {
+                    // Otra categoría: gris y deshabilitado
+                    btn.setBackground(colorInactivo);
+                    btn.setBorder(null);
+                    btn.setEnabled(false);
+                }
             }
         }
     }
-}
 
     // CONTENEDOR COMPRAR
     // Panel lateral: leyenda de categorías + total + botón confirmar
     // Centro: matriz de asientos en modo compra
     // =========================================================
-    public JPanel ContenedorComprar()
-    {
+    public JPanel ContenedorComprar() {
 
-        
         eventoPrincipal.actualizarListas();
         eventoPrincipal.imprimirlistas();
-        
+
         Font fontLabel = new Font("Arial", Font.BOLD, 15);
         Font fontInfo = new Font("Arial", Font.PLAIN, 14);
 
@@ -688,9 +650,9 @@ public class MenuPrincipal extends JFrame
         // Leyenda de colores
         JPanel panelLeyenda = new JPanel(new GridLayout(3, 1, 5, 8));
         panelLeyenda.setOpaque(false);
-        panelLeyenda.add(filaLeyenda("VIP: "+eventoPrincipal.totalBoletosCategoria(eventoPrincipal.boletosVip), COLOR_VIP, fontInfo));
-        panelLeyenda.add(filaLeyenda("Preferencial: "+eventoPrincipal.totalBoletosCategoria(eventoPrincipal.boletosPreferencial), COLOR_PREF, fontInfo));
-        panelLeyenda.add(filaLeyenda("General: "+eventoPrincipal.totalBoletosCategoria(eventoPrincipal.boletosGeneral), COLOR_GEN, fontInfo));
+        panelLeyenda.add(filaLeyenda("VIP: " + eventoPrincipal.totalBoletosCategoria(eventoPrincipal.boletosVip), COLOR_VIP, fontInfo));
+        panelLeyenda.add(filaLeyenda("Preferencial: " + eventoPrincipal.totalBoletosCategoria(eventoPrincipal.boletosPreferencial), COLOR_PREF, fontInfo));
+        panelLeyenda.add(filaLeyenda("General: " + eventoPrincipal.totalBoletosCategoria(eventoPrincipal.boletosGeneral), COLOR_GEN, fontInfo));
 
         // Panel combo + leyenda seleccionado
         JPanel panelFiltro = new JPanel(new GridLayout(4, 1, 5, 8));
@@ -734,39 +696,32 @@ public class MenuPrincipal extends JFrame
         contenedor.setBorder(new EmptyBorder(15, 15, 15, 15));
         contenedor.add(panelLateralCompra, BorderLayout.WEST);
         contenedor.add(matrizAsientos, BorderLayout.CENTER);
-        
-        
-        
-        btnConfirmar.addActionListener(e ->
-        {
+
+        btnConfirmar.addActionListener(e
+                -> {
             eventoPrincipal.actualizarListas();
             // Verificar que haya al menos un asiento seleccionado
-            if (contarSeleccionados() == 0)
-            {
+            if (contarSeleccionados() == 0) {
                 JOptionPane.showMessageDialog(this,
-                    "Selecciona al menos un asiento antes de confirmar.",
-                    "Sin selección", JOptionPane.WARNING_MESSAGE);
+                        "Selecciona al menos un asiento antes de confirmar.",
+                        "Sin selección", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
+
             JOptionPane.showMessageDialog(this,
-                "Compra confirmada\nTotal: $" + String.format("%.2f", total),
-                
-                "Confirmación", JOptionPane.INFORMATION_MESSAGE);
-               
-                mostrarContenido(ContenedorPPrincipal());
+                    "Compra confirmada\nTotal: $" + String.format("%.2f", total),
+                    "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+
+            mostrarContenido(ContenedorPPrincipal());
 
             // Marcar los asientos seleccionados como OCUPADO y repintar sus botones
-            for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++)
-            {
-                for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++)
-                {
-                    if (eventoPrincipal.estadio.getMatriz()[f][c]==null) {
+            for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++) {
+                for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++) {
+                    if (eventoPrincipal.estadio.getMatriz()[f][c] == null) {
                         continue;
                     }
-                    if (eventoPrincipal.estadio.getMatriz()[f][c].isSeleccionado())
-                    {
-                        
+                    if (eventoPrincipal.estadio.getMatriz()[f][c].isSeleccionado()) {
+
                         eventoPrincipal.estadio.getMatriz()[f][c].setSeleccionado(false);
                         eventoPrincipal.estadio.getMatriz()[f][c].setEstado(EstadoAsientos.OCUPADO); // <-- marcar como no disponible
                         botonesAsientos[f][c].setBackground(new Color(60, 60, 60));
@@ -787,9 +742,9 @@ public class MenuPrincipal extends JFrame
             seleccionados = boletosComprados.size();
             baseDatos.IniciarConexion();
             try {
-                Reporte repo = new Reporte(1, boletosComprados, (int)seleccionados, (Categoria) comboCategoria.getSelectedItem());
+                Reporte repo = new Reporte(1, boletosComprados, (int) seleccionados, (Categoria) comboCategoria.getSelectedItem());
                 //
-                eventoPrincipal.colaReportes.peek().mostrar();
+                //eventoPrincipal.colaReportes.peek().mostrar();
                 baseDatos.GuardarReporte(repo);
             } catch (SQLException ex) {
                 System.getLogger(MenuPrincipal.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
@@ -801,15 +756,14 @@ public class MenuPrincipal extends JFrame
             boletosComprados.clear();
             lblTotal.setText("Total: $0.00");
         });
-        
+
         JPanel margen = wrapConMargen(contenedor, 0, 15, 15, 15);
         margen.setBackground(BeigeB);
         return margen;
     }
 
     // Fila de leyenda: cuadro de color + etiqueta
-    private JPanel filaLeyenda(String texto, Color color, Font font)
-    {
+    private JPanel filaLeyenda(String texto, Color color, Font font) {
         JPanel fila = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         fila.setOpaque(false);
         JPanel cuadro = new JPanel();
@@ -825,19 +779,15 @@ public class MenuPrincipal extends JFrame
     }
 
     // Suma el precio de los asientos marcados como seleccionados
-    private double calcularTotal()
-    {
+    private double calcularTotal() {
         double total = 0;
-        for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++)
-        {
-            for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++)
-            {
+        for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++) {
+            for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++) {
                 Asientos a = eventoPrincipal.estadio.getAsiento(f, c);
-                if(a==null){
+                if (a == null) {
                     continue;
                 }
-                if (a.isSeleccionado())
-                {
+                if (a.isSeleccionado()) {
                     total += a.getCategoria().getPrecio();
                 }
             }
@@ -846,18 +796,14 @@ public class MenuPrincipal extends JFrame
     }
 
     //Para contar seleccionados sin recorrer dos veces 
-    private long contarSeleccionados()
-    {
+    private long contarSeleccionados() {
         long count = 0;
-        for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++)
-        {
-            for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++)
-            {
-                if (eventoPrincipal.estadio.getAsiento(f, c)==null) {
+        for (int f = 0; f < eventoPrincipal.estadio.getFILAS(); f++) {
+            for (int c = 0; c < eventoPrincipal.estadio.getCOLUMNAS(); c++) {
+                if (eventoPrincipal.estadio.getAsiento(f, c) == null) {
                     continue;
                 }
-                if (eventoPrincipal.estadio.getAsiento(f, c).isSeleccionado())
-                {
+                if (eventoPrincipal.estadio.getAsiento(f, c).isSeleccionado()) {
                     count++;
                 }
             }
@@ -868,8 +814,7 @@ public class MenuPrincipal extends JFrame
     // =========================================================
     // CONTENEDOR MODIFICAR EVENTO (reutiliza crearMatrizAsientos)
     // =========================================================
-    public JPanel ContenedorModEvento()
-    {
+    public JPanel ContenedorModEvento() {
 
         JPanel panelContenedor = new JPanel(new BorderLayout(0, 0));
         panelContenedor.setBackground(BeigeB);
@@ -878,8 +823,8 @@ public class MenuPrincipal extends JFrame
         // --- PANEL IZQUIERDO CONFIGURACIÓN ---
         JPanel panelConfiguracion = panelRedondeado(BeigeB, 20, null);
         panelConfiguracion.setBorder(BorderFactory.createCompoundBorder(
-            new RoundedBorder(20, VerdeB, 5),
-            new EmptyBorder(15, 15, 15, 15)));
+                new RoundedBorder(20, VerdeB, 5),
+                new EmptyBorder(15, 15, 15, 15)));
 
         Font fontLabel = new Font("Arial", Font.PLAIN, 16);
         Font fontTxt = new Font("Arial", Font.PLAIN, 16);
@@ -913,20 +858,19 @@ public class MenuPrincipal extends JFrame
         GPrecio.setFont(fontLabel);
         GPrecio.setBounds(150, 190, 110, 24);
 
-        comboCategoria.addActionListener(e ->
-        {
+        comboCategoria.addActionListener(e
+                -> {
             categoriaSeleccionada = (Categoria) comboCategoria.getSelectedItem();
             txtCosto.setText(String.valueOf(categoriaSeleccionada.getPrecio()));
         });
 
-        GPrecio.addActionListener(e ->
-        {
-            try
-            {
+        GPrecio.addActionListener(e
+                -> {
+            try {
                 categoriaSeleccionada.setPrecio(Double.parseDouble(txtCosto.getText()));
                 comboCategoria.repaint();
                 comboCategoria.validate();
-            } catch (NumberFormatException ex){
+            } catch (NumberFormatException ex) {
             }
         });
 
@@ -951,11 +895,11 @@ public class MenuPrincipal extends JFrame
         txtDesc.setText(eventoPrincipal.Descripcion);
         JScrollPane scrollDesc = new JScrollPane(txtDesc);
         scrollDesc.setBounds(x, 310, w, 130);
-        
+
         btnGuardarImg = new JButton("Seleccionar Imagen");
         btnGuardarImg.setBounds(x, 450, 220, 25);
         panelConfiguracion.add(btnGuardarImg);
-        
+
         btnGuardarImg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -965,80 +909,75 @@ public class MenuPrincipal extends JFrame
                 int resultado = selector.showOpenDialog(MenuPrincipal.this);
                 if (resultado == JFileChooser.APPROVE_OPTION) {
                     File f = selector.getSelectedFile();
+                    try {
+                        // Carpeta destino dentro del proyecto
+                        Path carpetaDestino = Paths.get("src/Imagenes");
+
+                        // Crea la carpeta si no existe
+                        if (!Files.exists(carpetaDestino)) {
+                            Files.createDirectories(carpetaDestino);
+                        }
+
+                        // Ruta completa del archivo destino
+                        Path archivoDestino = carpetaDestino.resolve(f.getName());
+
+                        // Copia el archivo; REPLACE_EXISTING evita error si ya hay uno igual
+                        Files.copy(f.toPath(), archivoDestino,
+                                StandardCopyOption.REPLACE_EXISTING);
+
+                        // Guarda la ruta LOCAL (ya dentro del proyecto)
+                        eventoPrincipal.rutaImg = archivoDestino.toString();
+
+                        JOptionPane.showMessageDialog(MenuPrincipal.this,
+                                "Imagen guardada:\n" + archivoDestino,
+                                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(MenuPrincipal.this,
+                                "Error al copiar la imagen:\n" + ex.getMessage(),
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                    if (resultado == JFileChooser.APPROVE_OPTION) {
                         try {
-                            // Carpeta destino dentro del proyecto
                             Path carpetaDestino = Paths.get("src/Imagenes");
 
-                            // Crea la carpeta si no existe
                             if (!Files.exists(carpetaDestino)) {
                                 Files.createDirectories(carpetaDestino);
                             }
 
-                            // Ruta completa del archivo destino
-                            Path archivoDestino = carpetaDestino.resolve(f.getName());
+                            Path archivoDestino
+                                    = carpetaDestino.resolve(f.getName());
 
-                            // Copia el archivo; REPLACE_EXISTING evita error si ya hay uno igual
-                            Files.copy(f.toPath(), archivoDestino, 
-                                       StandardCopyOption.REPLACE_EXISTING);
+                            Files.copy(
+                                    f.toPath(),
+                                    archivoDestino,
+                                    StandardCopyOption.REPLACE_EXISTING
+                            );
 
-                            // Guarda la ruta LOCAL (ya dentro del proyecto)
-                            eventoPrincipal.rutaImg = archivoDestino.toString();
+                            // ESTA ES LA RUTA QUE DEBES GUARDAR
+                            eventoPrincipal.rutaImg
+                                    = archivoDestino.toString();
 
-                            JOptionPane.showMessageDialog(MenuPrincipal.this,
-                                "Imagen guardada:\n" + archivoDestino,
-                                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(
+                                    MenuPrincipal.this,
+                                    "Imagen guardada:\n" + archivoDestino,
+                                    "Éxito",
+                                    JOptionPane.INFORMATION_MESSAGE
+                            );
+
                         } catch (IOException ex) {
-                            JOptionPane.showMessageDialog(MenuPrincipal.this,
-                                "Error al copiar la imagen:\n" + ex.getMessage(),
-                                "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(
+                                    MenuPrincipal.this,
+                                    "Error al copiar la imagen:\n"
+                                    + ex.getMessage(),
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
                         }
-                    if (resultado == JFileChooser.APPROVE_OPTION)
-{
-                    try
-                    {
-                        Path carpetaDestino = Paths.get("src/Imagenes");
-
-                        if (!Files.exists(carpetaDestino))
-                        {
-                            Files.createDirectories(carpetaDestino);
-                        }
-
-                        Path archivoDestino =
-                                carpetaDestino.resolve(f.getName());
-
-                        Files.copy(
-                                f.toPath(),
-                                archivoDestino,
-                                StandardCopyOption.REPLACE_EXISTING
-                        );
-
-                        // ESTA ES LA RUTA QUE DEBES GUARDAR
-                        eventoPrincipal.rutaImg =
-                                archivoDestino.toString();
-
-                        JOptionPane.showMessageDialog(
-                                MenuPrincipal.this,
-                                "Imagen guardada:\n" + archivoDestino,
-                                "Éxito",
-                                JOptionPane.INFORMATION_MESSAGE
-                        );
-
                     }
-                    catch (IOException ex)
-                    {
-                        JOptionPane.showMessageDialog(
-                                MenuPrincipal.this,
-                                "Error al copiar la imagen:\n"
-                                + ex.getMessage(),
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE
-                        );
-                    }
-                }
                 }
             }
         });
-        
+
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.setFont(fontTxt);
         btnGuardar.setBackground(Color.WHITE);
@@ -1052,7 +991,7 @@ public class MenuPrincipal extends JFrame
             String descripcion = txtDesc.getText().trim();
 
             if (fechaSeleccionada == null || nombre.isEmpty() || descripcion.isEmpty() || eventoPrincipal.rutaImg.equals("")) {
-                
+
                 JOptionPane.showMessageDialog(null, "Llena todos los campos");
                 return; //detiene la ejecución, no guarda nada
             }
@@ -1104,10 +1043,8 @@ public class MenuPrincipal extends JFrame
         return panelContenedor;
     }
 
-    private void actualizarColorBoton(JButton btn, Categoria cat)
-    {
-        switch (cat)
-        {
+    private void actualizarColorBoton(JButton btn, Categoria cat) {
+        switch (cat) {
             case VIP ->
                 btn.setBackground(COLOR_VIP);
             case PREFERENCIAL ->
@@ -1117,8 +1054,7 @@ public class MenuPrincipal extends JFrame
         }
     }
 
-    public void mostrarContenido(JPanel contenido)
-    {
+    public void mostrarContenido(JPanel contenido) {
         margenCentral.removeAll();
         margenCentral.add(contenido, BorderLayout.CENTER);
         margenCentral.revalidate();
@@ -1128,8 +1064,7 @@ public class MenuPrincipal extends JFrame
     // =========================================================
     // CONTENEDOR INFO
     // =========================================================
-    public JPanel ContenedorInfo()
-    {
+    public JPanel ContenedorInfo() {
         JPanel panelIzquierdo = panelRedondeado(BeigeB, 40, new BorderLayout());
         panelIzquierdo.setBorder(new RoundedBorder(40, VerdeTarjeta, 4));
 
@@ -1162,7 +1097,7 @@ public class MenuPrincipal extends JFrame
         columnaDerecha.setOpaque(false);
         columnaDerecha.setPreferredSize(new Dimension(360, 0));
         columnaDerecha.add(crearPanelImagen(new ImageIcon("src/Imagenes/ChivoCordoba1.jpeg").getImage()));
-        columnaDerecha.add(crearPanelImagen(new ImageIcon("src/Imagenes/Estadio2_1.jpg").getImage()));
+        columnaDerecha.add(crearPanelImagen(new ImageIcon("src/Imagenes/ChivoC1.jpg").getImage()));
 
         JPanel contenedor = panelRedondeado(new Color(230, 220, 200), 45, new BorderLayout(15, 0));
         contenedor.setBorder(new EmptyBorder(15, 15, 15, 15));
@@ -1177,13 +1112,10 @@ public class MenuPrincipal extends JFrame
     // =========================================================
     // HELPERS
     // =========================================================
-    private JPanel crearPanelImagen(Image img)
-    {
-        JPanel p = new JPanel()
-        {
+    private JPanel crearPanelImagen(Image img) {
+        JPanel p = new JPanel() {
             @Override
-            protected void paintComponent(Graphics g)
-            {
+            protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -1197,13 +1129,10 @@ public class MenuPrincipal extends JFrame
         return p;
     }
 
-    private JPanel panelRedondeado(Color color, int radio, LayoutManager layout)
-    {
-        JPanel p = new JPanel(layout)
-        {
+    private JPanel panelRedondeado(Color color, int radio, LayoutManager layout) {
+        JPanel p = new JPanel(layout) {
             @Override
-            protected void paintComponent(Graphics g)
-            {
+            protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(color);
@@ -1216,8 +1145,7 @@ public class MenuPrincipal extends JFrame
         return p;
     }
 
-    private JPanel wrapConMargen(JPanel inner, int top, int left, int bottom, int right)
-    {
+    private JPanel wrapConMargen(JPanel inner, int top, int left, int bottom, int right) {
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setOpaque(false);
         wrapper.setBorder(new EmptyBorder(top, left, bottom, right));
@@ -1225,20 +1153,16 @@ public class MenuPrincipal extends JFrame
         return wrapper;
     }
 
-    private JButton crearBotonNav(String texto)
-    {
+    private JButton crearBotonNav(String texto) {
         JButton btn = crearBotonRedondeado(texto, VerdeB);
         btn.setFont(new Font("Arial", Font.BOLD, 15));
         return btn;
     }
 
-    private JButton crearBotonRedondeado(String texto, Color color)
-    {
-        JButton btn = new JButton(texto)
-        {
+    private JButton crearBotonRedondeado(String texto, Color color) {
+        JButton btn = new JButton(texto) {
             @Override
-            protected void paintComponent(Graphics g)
-            {
+            protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(getBackground());
@@ -1254,39 +1178,33 @@ public class MenuPrincipal extends JFrame
         btn.setForeground(Color.WHITE);
         btn.setBackground(color);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.addMouseListener(new MouseAdapter()
-        {
+        btn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(MouseEvent e)
-            {
+            public void mouseEntered(MouseEvent e) {
                 btn.setBackground(color.brighter());
             }
 
             @Override
-            public void mouseExited(MouseEvent e)
-            {
+            public void mouseExited(MouseEvent e) {
                 btn.setBackground(color);
             }
         });
         return btn;
     }
 
-    class RoundedBorder extends AbstractBorder
-    {
+    class RoundedBorder extends AbstractBorder {
 
         private final int radius, thickness;
         private final Color color;
 
-        RoundedBorder(int radius, Color color, int thickness)
-        {
+        RoundedBorder(int radius, Color color, int thickness) {
             this.radius = radius;
             this.color = color;
             this.thickness = thickness;
         }
 
         @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height)
-        {
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(color);
@@ -1296,8 +1214,7 @@ public class MenuPrincipal extends JFrame
         }
 
         @Override
-        public Insets getBorderInsets(Component c)
-        {
+        public Insets getBorderInsets(Component c) {
             return new Insets(10, 10, 10, 10);
         }
     }
