@@ -90,6 +90,17 @@ public class MenuPrincipal extends JFrame {
         baseDatos.RecuperarEvento(eventoPrincipal);
         baseDatos.CerrarConexion();
         ReportesPDF = new GenerarPDF();
+        
+//        baseDatos.IniciarConexion();
+//        baseDatos.insertarCategorias(Categoria.VIP);
+//        baseDatos.insertarCategorias(Categoria.PREFERENCIAL);
+//        baseDatos.insertarCategorias(Categoria.GENERAL);
+//        baseDatos.CerrarConexion();
+        baseDatos.IniciarConexion();
+        baseDatos.RecuperarCategorias(VIP);
+        baseDatos.RecuperarCategorias(PREFERENCIAL);
+        baseDatos.RecuperarCategorias(GENERAL);
+        baseDatos.CerrarConexion();
     }
 
     public void ContenedorPrincipal() {
@@ -368,7 +379,7 @@ public class MenuPrincipal extends JFrame {
                         login.setVisible(false);
                         Admin = true;
                         actualizarNavbar();
-                        mostrarContenido(ContenedorPPrincipal());
+                        mostrarContenido(ContenedorModEvento());
                     }
                 });
             });
@@ -566,19 +577,55 @@ public class MenuPrincipal extends JFrame {
                 filtrarMatrizPorCategoria(nueva, COLOR_INACTIVO);
             });
         }
-        JPanel panelColumnas = new JPanel(new GridLayout(1,eventoPrincipal.estadio.getCOLUMNAS(),3,0));
+                // 1. BANNER "Escenario" en la parte superior
+        JPanel panelEscenario = new JPanel(new BorderLayout());
+        panelEscenario.setOpaque(false);
+        panelEscenario.setBorder(new EmptyBorder(4, 0, 4, 0));
+
+        JLabel lblEscenario = new JLabel("Escenario", SwingConstants.CENTER);
+        lblEscenario.setFont(new Font("Arial", Font.BOLD, 14));
+        lblEscenario.setForeground(Color.WHITE); // o el color que corresponda a tu tema
+        lblEscenario.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(VerdeTarjeta, 2),
+            new EmptyBorder(6, 24, 6, 24)
+        ));
+        lblEscenario.setOpaque(true);
+        lblEscenario.setBackground(VerdeB); // mismo color que panelMatriz
+        panelEscenario.add(lblEscenario, BorderLayout.CENTER);
+
+        // 2. Panel de columnas CON OFFSET que compensa el ancho de panelFilas
+        // Crea un placeholder del mismo ancho que panelFilas para alinear las columnas
+        JPanel placeholderFilas = new JPanel();
+        placeholderFilas.setOpaque(false);
+        // El panelFilas usa EmptyBorder(6, 0, 6, 8), calcula su ancho preferido:
+        // se usará el mismo componente panelFilas como referencia
+        placeholderFilas.setPreferredSize(new Dimension(
+            panelFilas.getPreferredSize().width, 1
+        ));
+
+        JPanel panelColumnas = new JPanel(new GridLayout(1, eventoPrincipal.estadio.getCOLUMNAS(), 3, 0));
         panelColumnas.setOpaque(false);
-        panelColumnas.setBorder(new EmptyBorder(8,6,6,8));
-        for (int c = 0; c <= eventoPrincipal.estadio.getCOLUMNAS()-1; c++) {
-            JLabel lbl = new JLabel("C" + (c+1), SwingConstants.CENTER);
+        panelColumnas.setBorder(new EmptyBorder(8, 6, 6, 6)); // left/right = mismo padding que panelMatriz
+
+        for (int c = 0; c <= eventoPrincipal.estadio.getCOLUMNAS() - 1; c++) {
+            JLabel lbl = new JLabel("C" + (c + 1), SwingConstants.CENTER);
             lbl.setFont(fontLabel);
             panelColumnas.add(lbl);
         }
+
+        // Contenedor inferior: placeholder + columnas alineadas
+        JPanel panelFilaColumnas = new JPanel(new BorderLayout());
+        panelFilaColumnas.setOpaque(false);
+        panelFilaColumnas.add(placeholderFilas, BorderLayout.WEST);  // ← compensa el offset
+        panelFilaColumnas.add(panelColumnas, BorderLayout.CENTER);
+
+        // 3. Armar el contenedor principal
         JPanel contenedorMatriz = new JPanel(new BorderLayout());
         contenedorMatriz.setOpaque(false);
+        contenedorMatriz.add(panelEscenario, BorderLayout.NORTH);    // ← banner arriba
         contenedorMatriz.add(panelFilas, BorderLayout.WEST);
         contenedorMatriz.add(panelMatriz, BorderLayout.CENTER);
-        contenedorMatriz.add(panelColumnas, BorderLayout.SOUTH);
+        contenedorMatriz.add(panelFilaColumnas, BorderLayout.SOUTH); // ← columnas alineadas
         return contenedorMatriz;
     }
 
@@ -870,7 +917,12 @@ public class MenuPrincipal extends JFrame {
                 categoriaSeleccionada.setPrecio(Double.parseDouble(txtCosto.getText()));
                 comboCategoria.repaint();
                 comboCategoria.validate();
+                baseDatos.IniciarConexion();
+                baseDatos.ActualizarCategorias(categoriaSeleccionada);
+                baseDatos.CerrarConexion();
             } catch (NumberFormatException ex) {
+            } catch (SQLException ex) {
+                System.getLogger(MenuPrincipal.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
         });
 

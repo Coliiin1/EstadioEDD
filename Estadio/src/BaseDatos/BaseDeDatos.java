@@ -331,6 +331,61 @@ public class BaseDeDatos {
         ps.executeUpdate();
     }
     
+    public void insertarCategorias(Categoria cat) throws SQLException{
+        PreparedStatement ps =
+            conexion.prepareStatement(
+                """
+                INSERT INTO categorias(
+                    categoria,
+                    precio
+                )
+                VALUES(?,?)
+                """
+            );
+        ps.setString(1, cat.name());
+        ps.setDouble(2, cat.getPrecio()); 
+        ps.executeUpdate();
+    }
+    
+    public void RecuperarCategorias(Categoria cat){
+        Statement st;
+        ResultSet rs;
+        
+        try{
+            st = conexion.createStatement();
+            rs = st.executeQuery("SELECT * FROM categorias");
+            
+            while(rs.next()){
+                
+                cat.setPrecio(rs.getDouble("precio")); 
+                
+                
+            }
+        } catch(SQLException e){
+            System.out.println("Nosepudo :p");
+        }
+    }
+    
+    public void ActualizarCategorias(Categoria cat) throws SQLException{
+        PreparedStatement ps =
+        conexion.prepareStatement(
+
+            """
+            UPDATE categorias
+            SET precio = ?
+            WHERE categoria = ?
+            """
+        );
+
+        ps.setDouble(
+            1,
+            cat.getPrecio()
+            
+        );
+        ps.setString(2, cat.name());
+        ps.executeUpdate();
+    }
+    
     public static void main(String args[]){
         BaseDeDatos baseDatos = new BaseDeDatos();
         baseDatos.IniciarConexion();

@@ -110,7 +110,7 @@ REPLACE INTO `asientos` (`fila`, `columna`, `categoria`, `estado`) VALUES
 	(7, 8, 'GENERAL', 'DISPONIBLE'),
 	(7, 9, 'GENERAL', 'DISPONIBLE'),
 	(7, 10, 'GENERAL', 'DISPONIBLE'),
-	(7, 11, 'GENERAL', 'DISPONIBLE'),
+	(7, 11, 'VIP', 'DISPONIBLE'),
 	(7, 12, 'GENERAL', 'DISPONIBLE'),
 	(7, 13, 'GENERAL', 'DISPONIBLE'),
 	(7, 14, 'GENERAL', 'DISPONIBLE'),
@@ -174,7 +174,7 @@ REPLACE INTO `asientos` (`fila`, `columna`, `categoria`, `estado`) VALUES
 	(8, 34, 'GENERAL', 'DISPONIBLE'),
 	(8, 35, 'GENERAL', 'DISPONIBLE'),
 	(8, 36, 'GENERAL', 'DISPONIBLE'),
-	(9, 1, 'GENERAL', 'DISPONIBLE'),
+	(9, 1, 'VIP', 'DISPONIBLE'),
 	(9, 2, 'GENERAL', 'DISPONIBLE'),
 	(9, 3, 'GENERAL', 'DISPONIBLE'),
 	(9, 4, 'GENERAL', 'DISPONIBLE'),
@@ -443,7 +443,7 @@ CREATE TABLE IF NOT EXISTS `boletos_vendidos` (
   CONSTRAINT `FK_boletos_vendidos_reportes` FOREIGN KEY (`id_Venta`) REFERENCES `reportes` (`id_Venta`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
--- Volcando datos para la tabla estadio.boletos_vendidos: ~3 rows (aproximadamente)
+-- Volcando datos para la tabla estadio.boletos_vendidos: ~7 rows (aproximadamente)
 REPLACE INTO `boletos_vendidos` (`id_Boleto`, `categoria`, `fila`, `columna`, `estado`, `precio`, `id_Venta`) VALUES
 	('F1-C2', 'GENERAL', 0, 1, 'OCUPADO', 300, 23),
 	('F3-C3', 'PREFERENCIAL', 2, 2, 'OCUPADO', 800, 24),
@@ -452,6 +452,19 @@ REPLACE INTO `boletos_vendidos` (`id_Boleto`, `categoria`, `fila`, `columna`, `e
 	('F9-C12', 'GENERAL', 8, 11, 'OCUPADO', 300, 26),
 	('F9-C13', 'GENERAL', 8, 12, 'OCUPADO', 300, 26),
 	('F9-C16', 'GENERAL', 8, 15, 'OCUPADO', 300, 26);
+
+-- Volcando estructura para tabla estadio.categorias
+CREATE TABLE IF NOT EXISTS `categorias` (
+  `categoria` varchar(20) NOT NULL,
+  `precio` double DEFAULT NULL,
+  PRIMARY KEY (`categoria`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- Volcando datos para la tabla estadio.categorias: ~3 rows (aproximadamente)
+REPLACE INTO `categorias` (`categoria`, `precio`) VALUES
+	('GENERAL', 300),
+	('PREFERENCIAL', 800),
+	('VIP', 1700);
 
 -- Volcando estructura para tabla estadio.evento
 CREATE TABLE IF NOT EXISTS `evento` (
@@ -465,7 +478,7 @@ CREATE TABLE IF NOT EXISTS `evento` (
 
 -- Volcando datos para la tabla estadio.evento: ~1 rows (aproximadamente)
 REPLACE INTO `evento` (`Nombre`, `Imagen`, `Fecha`, `Descripcion`, `Id_Evento`) VALUES
-	('THE ERAS TOUR', 'C:\\Users\\danie\\Downloads\\the-eras-tour-film-de-taylor-swift-una-experiencia-cinematografica.jpg', '2026-11-11', 'Concierto perteneciente a la gira mundial “The Eras Tour”, un espectáculo musical que recorre las diferentes etapas y álbumes de la artista. El evento contará con escenografías temáticas, cambios de vestuario, pantallas gigantes, efectos visuales y una duración aproximada de más de tres horas.', 1);
+	('THE ERAS TOUR', 'src\\Imagenes\\images.jpg', '2026-11-11', 'Concierto perteneciente a la gira mundial “The Eras Tour”, un espectáculo musical que recorre las diferentes etapas y álbumes de la artista. El evento contará con escenografías temáticas, cambios de vestuario, pantallas gigantes, efectos visuales y una duración aproximada de más de tres horas.', 1);
 
 -- Volcando estructura para tabla estadio.reportes
 CREATE TABLE IF NOT EXISTS `reportes` (
@@ -477,7 +490,7 @@ CREATE TABLE IF NOT EXISTS `reportes` (
   PRIMARY KEY (`id_Venta`)
 ) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
--- Volcando datos para la tabla estadio.reportes: ~3 rows (aproximadamente)
+-- Volcando datos para la tabla estadio.reportes: ~4 rows (aproximadamente)
 REPLACE INTO `reportes` (`id_Venta`, `Fecha`, `num_Boletos`, `categoria`, `ingreso`) VALUES
 	(23, '2026-05-09 23:57:55', 1, 'GENERAL', 300),
 	(24, '2026-05-09 23:59:44', 1, 'PREFERENCIAL', 800),
